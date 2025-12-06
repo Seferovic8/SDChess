@@ -1,9 +1,0 @@
-﻿  SDchess.cpp
-C:\Users\salih\source\repos\SDChess\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Bitboard.h(7,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Bitboard.h(8,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Bitboard.h(9,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Move.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\salih\source\repos\SDChess\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  SDchess.vcxproj -> C:\Users\salih\source\repos\SDChess\x64\Debug\SDchess.exe

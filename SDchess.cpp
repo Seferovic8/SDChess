@@ -82,7 +82,7 @@ int main()
     //auto moves = board.generatePieceMoves(chess::Position("E8"));
     //auto moves = board.getAllLegalMoves();
     
-  int numPositions = moveGenerationTest(board, 5);
+  int numPositions = moveGenerationTest(board, 4);
    std::cout << numPositions << std::endl;
   
    auto move = chess::Move("H1","H8",false,false,chess::PieceType::None);
