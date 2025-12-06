@@ -14,9 +14,9 @@ namespace chess {
 		initAttackTables();
 
 	}
-	Bitboard::Bitboard(chess::VectorBoard& board) {
+	Bitboard::Bitboard(chess::VectorBoard& board, chess::Color side) {
 		initAttackTables();
-		loadBitboard(board);
+		loadBitboard(board,side);
 	}
 	chess::Position Bitboard::numToPosition(int sq) {
 		int row = 7 - (sq / 8);
@@ -26,7 +26,9 @@ namespace chess {
 	int  Bitboard::positionToNum(chess::Position pos) {
 		return (7 - pos.row) * 8 + pos.column;
 	}
-	void Bitboard::loadBitboard(chess::VectorBoard& board) {
+	void Bitboard::loadBitboard(chess::VectorBoard& board,Color side) {
+		sideToMove = side;
+
 		whitePawns = whiteKnights = whiteBishops = whiteRooks = whiteQueens = whiteKings = 0ULL;
 		blackPawns = blackKnights = blackBishops = blackRooks = blackQueens = blackKings = 0ULL;
 		for (int r = 0; r < 8; r++) {
@@ -64,6 +66,7 @@ namespace chess {
 
 	void Bitboard::printBitboard() const
 	{
+
 		for (int rank = 7; rank >= 0; rank--)     // 8 → 1
 		{
 			for (int file = 0; file < 8; file++)  // a → h
@@ -77,7 +80,7 @@ namespace chess {
 		}
 		std::cout << "\n";
 	}
-	void pBitboard(uint64_t allPieces)
+	void Bitboard::pBitboard(uint64_t allPieces)
 	{
 		std::cout << std::endl;
 
@@ -233,7 +236,7 @@ namespace chess {
 
 		uint64_t attackers = 0ULL;
 
-		if (color == Color::White)
+		if (color == Color::Black)
 			attackers |= pawnAttacksBlack[ks] & enemyPawns; // black pawns attack down
 		else
 			attackers |= pawnAttacksWhite[ks] & enemyPawns; // white pawns attack up
@@ -248,41 +251,92 @@ namespace chess {
 	int Bitboard::getIndex(uint64_t bb)const {
 		return lsb(bb);
 	}
-	std::pair<uint64_t,uint64_t> Bitboard::getCheckMask(int kingSq, Color color, uint64_t attackers) {
-		uint64_t enemyPawns = color == Color::Black ? whitePawns : blackPawns;
-		uint64_t enemyKnights = color == Color::Black ? whiteKnights : blackKnights;
-		uint64_t enemyKings = color == Color::Black ? whiteKings : blackKings;
-		uint64_t enemyRooks = color == Color::Black ? whiteRooks : blackRooks;
-		uint64_t enemyBishops = color == Color::Black ? whiteBishops : blackBishops;
-		uint64_t enemyQueens = color == Color::Black ? whiteQueens : blackQueens;
+	std::pair<uint64_t, uint64_t> Bitboard::getCheckMask(int kingSq, Color color, uint64_t attackers) {
+
+
+		uint64_t enemyRooks = (color == Color::Black) ? whiteRooks : blackRooks;
+		uint64_t enemyBishops = (color == Color::Black) ? whiteBishops : blackBishops;
+		uint64_t enemyQueens = (color == Color::Black) ? whiteQueens : blackQueens;
+
+		// Occupancy of all pieces
+		uint64_t occ = whitePieces | blackPieces;
+
 		uint64_t checkMask = 0ULL;
 		int attackerSq = getIndex(attackers);
 		uint64_t attackerBB = 1ULL << attackerSq;
 
-		// King can always capture attacker if legal
+		// A friendly piece can capture the attacker
 		checkMask |= attackerBB;
 
-		// Sliding piece? then add block squares
+		// If it's a slider, a friendly piece can block the path
 		if (attackerBB & (enemyBishops | enemyRooks | enemyQueens)) {
 			checkMask |= rayBetween(kingSq, attackerSq);
 		}
-		uint64_t controledMask = 0LL;
-		if (attackerBB & enemyRooks) {
-			controledMask = rookRays[attackerSq];
-		}
-		else if (attackerBB & enemyBishops) {
 
-			controledMask = bishopRays[attackerSq];
-		}
-		else if (attackerBB & enemyQueens) {
+		// --- Calculate Controlled Mask (Where King cannot go) ---
+		uint64_t controledMask = 0ULL;
 
-			controledMask = rookRays[attackerSq] | bishopRays[attackerSq];
-		}
-		if (!(controledMask & (1ULL << 26))) {
-			pBitboard((controledMask & (1ULL << 26)));
+		// IMPORTANT: Remove King from occupancy so sliders see "through" him
+		// to cover squares like e2 when King is on e1 and Rook on e8.
+		uint64_t occNoKing = occ ^ (1ULL << kingSq);
 
+		if (attackerBB & (enemyRooks | enemyQueens)) {
+			// Use Magic Bitboard lookup with OccNoKing
+			controledMask |= rookAttacksWithBlockers(attackerSq, occNoKing);
 		}
-		return {checkMask,controledMask};
+
+		if (attackerBB & (enemyBishops | enemyQueens)) {
+			// Use Magic Bitboard lookup with OccNoKing
+			controledMask |= bishopAttacksWithBlockers(attackerSq, occNoKing);
+		}
+
+		// Note: If attacker is Knight/Pawn, controledMask is just their static attack
+		// (You might want to handle that else-if here for completeness, 
+		// though the King step-logic usually handles static attacks separately).
+
+		return { checkMask, controledMask };
+	}
+	bool Bitboard::canEnPassant(Move move) {
+		uint64_t kingBB = sideToMove == Color::White ? whiteKings : blackKings;
+		uint64_t enemyPawns = sideToMove == Color::Black ? whitePawns : blackPawns;
+		uint64_t friendlyPawns = sideToMove == Color::White ? whitePawns : blackPawns;
+		uint64_t enemyKnights = sideToMove == Color::Black ? whiteKnights : blackKnights;
+		uint64_t enemyKings = sideToMove == Color::Black ? whiteKings : blackKings;
+		uint64_t enemyRooks = sideToMove == Color::Black ? whiteRooks : blackRooks;
+		uint64_t enemyBishops = sideToMove == Color::Black ? whiteBishops : blackBishops;
+		uint64_t enemyQueens = sideToMove == Color::Black ? whiteQueens : blackQueens;
+		uint64_t allMyPieces = allPieces;
+		//pBitboard(~1ULL);
+		uint64_t myPawnMask = (1ULL << move.getFromPos().getNumberIndex());
+		friendlyPawns=(myPawnMask^friendlyPawns);
+		allMyPieces = (myPawnMask ^ allMyPieces);
+		myPawnMask = (1ULL << move.getToPos().getNumberIndex());
+		allMyPieces = (myPawnMask | allMyPieces);
+		friendlyPawns = (myPawnMask | friendlyPawns);
+
+		chess::Position enemyPawnPosition = chess::Position(move.getFromPos().row, move.getToPos().column);
+		uint64_t enemyPawnMask = (1ULL << enemyPawnPosition.getNumberIndex());
+		enemyPawns = (enemyPawnMask ^ enemyPawns);
+		allMyPieces = (enemyPawnMask ^ allMyPieces);
+		
+		return isAttacked(lsb(kingBB),sideToMove,enemyPawns,enemyKnights,enemyKings,enemyRooks,enemyBishops,enemyQueens,allMyPieces);
+		
+	}
+	bool Bitboard::canCastle(bool kingSide,chess::Position fromPos) {
+
+		int rookPos = (kingSide) ? 7 : 0;
+		if (sideToMove == Color::Black) {
+			rookPos += 56;
+		}
+		uint64_t castleRay = rayBetween(fromPos.getNumberIndex(), rookPos);
+		if (castleRay & allPieces) return false;
+
+		if (!kingSide) {
+			castleRay=(castleRay^(1ULL << (rookPos + 1)));
+		}
+		if (castleRay & controledSquares(!sideToMove)) return false;
+
+		return true;
 	}
 	uint64_t Bitboard::rayBetween(int kingSq, int attackerSq) {
 		int dir = direction[kingSq][attackerSq]; // precomputed direction table
@@ -383,31 +437,33 @@ namespace chess {
 
 
 		int kingSquare = lsb(kingBB); // king square 
+		return isAttacked(kingSquare, color, enemyPawns, enemyKnights, enemyKings, enemyRooks, enemyBishops, enemyQueens, allPieces);
+
+	}
+	bool Bitboard::isAttacked(int square,Color color, uint64_t enemyPawns, uint64_t enemyKnights, uint64_t enemyKings, uint64_t enemyRooks, uint64_t enemyBishops, uint64_t enemyQueens, uint64_t allMyPieces) {
 		// Knight check 
-		if (knightMoves[kingSquare] & enemyKnights) return true;
+		if (knightMoves[square] & enemyKnights) return true;
 
 		if (color == Color::White) {
-			if (pawnAttacksBlack[kingSquare] & enemyPawns) return true;
+			if (pawnAttacksWhite[square] & enemyPawns) return true;
 		}
 		else {
 
-			if (pawnAttacksWhite[kingSquare] & enemyPawns) return true;
+			if (pawnAttacksBlack[square] & enemyPawns) return true;
 		}
 		// Pawn check (black pawns attack downwards) 
 
 		// King check (rare but possible in eval) 
-		if (kingMoves[kingSquare] & enemyKings) return true;
+		if (kingMoves[square] & enemyKings) return true;
 
 		// Sliding pieces 
 		// Rook / queen attacks 
-		if (rookAttacksWithBlockers(kingSquare, allPieces) & (enemyRooks | enemyQueens)) return true;
+		if (rookAttacksWithBlockers(square, allMyPieces) & (enemyRooks | enemyQueens)) return true;
 		// Bishop / queen attacks 
-		if (bishopAttacksWithBlockers(kingSquare, allPieces) & (enemyBishops | enemyQueens)) return true;
+		if (bishopAttacksWithBlockers(square, allMyPieces) & (enemyBishops | enemyQueens)) return true;
 
 		return false;
-
 	}
-
 
 	uint64_t Bitboard::rookAttacksWithBlockers(int sq, uint64_t occ) {
 		uint64_t attacks = 0ULL;
@@ -496,60 +552,71 @@ namespace chess {
 		return getBitList(kingMoves[sq] & ~myPieces);
 	}
 	std::pair<std::unordered_set<int>, std::array<uint64_t, 64>> Bitboard::getPinnedPieces() {
-		auto pinnedPieces = 0ULL;
-		//uint64_t pinMask[64];
-		//memset(pinMask, 0, sizeof(pinMask));
-		std::array<uint64_t, 64> pinMask{};
-		pinMask.fill(0);
+		uint64_t pinnedPiecesMap = 0ULL;
+		std::array<uint64_t, 64> pinMask;
+		pinMask.fill(0ULL);
 
-		int kingSq = lsb(whiteKings);
-		static const int dir[8] = { 8,-8,1,-1,9,-9,7,-7 };
+		// Setup pieces based on side to move
+		uint64_t kings = (sideToMove == Color::White) ? whiteKings : blackKings;
+		uint64_t friendlyPieces = (sideToMove == Color::White) ? whitePieces : blackPieces;
+		uint64_t enemyPieces = (sideToMove == Color::White) ? blackPieces : whitePieces;
+		uint64_t enemyRooks = (sideToMove == Color::White) ? blackRooks : whiteRooks;
+		uint64_t enemyBishops = (sideToMove == Color::White) ? blackBishops : whiteBishops;
+		uint64_t enemyQueens = (sideToMove == Color::White) ? blackQueens : whiteQueens;
+
+		int kingSq = lsb(kings);
+
+		// N, S, E, W, NE, SW, NW, SE
+		static const int dir[8] = { 8, -8, 1, -1, 9, -9, 7, -7 };
 
 		for (int d = 0; d < 8; d++) {
 			int sq = kingSq;
 			uint64_t rayMask = 0ULL;
-			uint64_t blocker = 0ULL;
+			int blockerSq = -1; // Use int for index, clearer than checking uint64 bit
 
 			while (true) {
+				int prevSq = sq;
 				sq += dir[d];
 
-				// off board or wrap
+				// 1. Check Vertical Bounds
 				if (sq < 0 || sq >= 64) break;
-				if ((dir[d] == 1 && sq % 8 == 0) ||
-					(dir[d] == -1 && sq % 8 == 7) ||
-					(dir[d] == 9 && sq % 8 == 0) ||
-					(dir[d] == 7 && sq % 8 == 7)) break;
+
+				// 2. Check Horizontal Wrap (The Logic Fix)
+				// If the file distance between current and prev square is > 1, we wrapped.
+				int currentFile = sq & 7;
+				int prevFile = prevSq & 7;
+				if (std::abs(currentFile - prevFile) > 1) break;
 
 				uint64_t bit = 1ULL << sq;
-				rayMask |= bit;
+				rayMask |= bit; // Add square to the ray
 
-				// friendly piece
-				if (whitePieces & bit) {
-					if (!blocker) blocker = bit;
-					else break; // second friendly → no pin here
+				if (friendlyPieces & bit) {
+					if (blockerSq == -1) {
+						blockerSq = sq; // Found the first friendly piece (potential pin)
+					}
+					else {
+						break; // Second friendly piece found, no pin possible
+					}
 				}
-				// enemy piece
-				else if (blackPieces & bit) {
-					bool rookLine = (d < 4);
-					bool bishopLine = (d >= 4);
+				else if (enemyPieces & bit) {
+					// If we hit an enemy, check if it's the right type to pin
+					if (blockerSq != -1) {
+						bool isDiagonal = (d >= 4); // Indices 4-7 are diagonals
 
-					if (blocker) {
-						if ((rookLine && (bit & (blackRooks | blackQueens))) ||
-							(bishopLine && (bit & (blackBishops | blackQueens)))) {
+						uint64_t attackers = isDiagonal ? (enemyBishops | enemyQueens)
+							: (enemyRooks | enemyQueens);
 
-							// ✅ We have a pinned piece
-							pinnedPieces |= blocker;
-							pinMask[lsb(blocker)] = rayMask;
+						if (bit & attackers) {
+							// We found a pinner!
+							pinnedPiecesMap |= (1ULL << blockerSq);
+							pinMask[blockerSq] = rayMask;
 						}
 					}
-					break;
+					break; // Hit an enemy piece, stop scanning this ray
 				}
 			}
 		}
-		//pBitboard(pinnedPieces);
-		//pBitboard(pinMask[5 + (8 * 4)]);
-		//pBitboard(pinMask[3 + (8 * 3)]);
-		return { getBitList(pinnedPieces), pinMask };
+		return { getBitList(pinnedPiecesMap), pinMask };
 	}
 
 }

@@ -20,7 +20,8 @@ namespace chess {
 		bool hasPiece() const;
 		chess::Position getPosition();
 		Piece* getPiece();
-		std::string getIndex();
+		void removePiece();
+		void addPiece(std::unique_ptr<Piece> piece);
 		bool isKing() const;
 	};
 }

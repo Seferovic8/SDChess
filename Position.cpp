@@ -21,5 +21,10 @@ chess::Position Position::indexToPos(std::string squareName) {
 	int r = 8 - (rank);
 	return chess::Position(r, c);
 }
+int Position::getNumberIndex() {
+		int pos = row * 8 + column;
+		//return pos;
+		return (7 - row) * 8 + column;
+}
 
 }

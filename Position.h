@@ -20,5 +20,6 @@ namespace chess {
 		}
 		static std::string squareToString(chess::Position position);
 		static chess::Position indexToPos(std::string squareName);
+		 int getNumberIndex();
 	};
 }

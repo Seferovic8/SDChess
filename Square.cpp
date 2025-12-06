@@ -45,7 +45,12 @@ namespace chess {
 	bool Square::isKing() const {
 		return hasPiece() && _piece->getPieceType() == PieceType::King;
 	}
-
+	void Square::removePiece() {
+		_piece = nullptr;
+	}
+	void Square::addPiece(std::unique_ptr<Piece> piece) {
+		_piece = std::move(piece);
+	}
 }
 //bool Board::canMove(int fr, int fc, int tr, int tc) const {
 //    // get piece

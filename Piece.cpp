@@ -48,7 +48,25 @@ namespace chess {
 			return nullptr; // unrecognized char, no piece
 		}
 	}
+	std::unique_ptr<Piece> createPiece(chess::PieceType pieceType, chess::Color color) {
 
+		switch (pieceType) {
+		case chess::PieceType::Pawn:
+			return std::make_unique<Pawn>(color);
+		case chess::PieceType::Rook:
+			return std::make_unique<Rook>(color);
+		case chess::PieceType::Knight:
+			return std::make_unique<Knight>(color);
+		case chess::PieceType::Bishop:
+			return std::make_unique<Bishop>(color);
+		case chess::PieceType::Queen:
+			return std::make_unique<Queen>(color);
+		case chess::PieceType::King:
+			return std::make_unique<King>(color);
+		default:
+			return nullptr; // unrecognized char, no piece
+		}
+	}
 	std::vector<chess::Position> King::directions() const {
 		return {
 			{1,0}, {-1,0}, {0,1}, {0,-1},     // vertical & horizontal

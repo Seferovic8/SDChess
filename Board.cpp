@@ -114,7 +114,7 @@ namespace chess {
 			}
 		}
 		sideToMove = Color::White;
-		bitboard.loadBitboard(board);
+		bitboard.loadBitboard(board, sideToMove);
 	}
 	Board::Board(std::string fen) {
 		//history.push_back(Move("B7", "B5"));
@@ -181,7 +181,7 @@ namespace chess {
 			b++;
 		}
 		castling = cast;
-		bitboard.loadBitboard(board);
+		bitboard.loadBitboard(board, sideToMove);
 
 	}
 	void Board::printBoard() const {
@@ -269,42 +269,31 @@ namespace chess {
 
 			}
 		}
-		if (piece->getPieceType() == PieceType::King) {
-			int row = fromPos.row;
-			int col = fromPos.column;
-			int piecePos = (piece->getColor() == Color::White) ? 7 : 0;
-			bool& kingRight = (piece->getColor() == Color::White) ? castling.whiteKing : castling.blackKing;
-			bool& queenRight = (piece->getColor() == Color::White) ? castling.whiteQueen : castling.blackQueen;
-			if (queenRight) {
-				bool isConnected = true;
-				for (int i = 1; i <= 3; i++) {
-					if (board[piecePos][4 - i].hasPiece()) {
-						isConnected = false;
-						break;
+		if (!this->isCheck()) {
+
+			if (piece->getPieceType() == PieceType::King) {
+				int row = fromPos.row;
+				int col = fromPos.column;
+				int piecePos = (piece->getColor() == Color::White) ? 7 : 0;
+				bool& kingRight = (piece->getColor() == Color::White) ? castling.whiteKing : castling.blackKing;
+				bool& queenRight = (piece->getColor() == Color::White) ? castling.whiteQueen : castling.blackQueen;
+				if (queenRight) {
+
+
+					if (bitboard.canCastle(false, fromPos))
+					{
+						moves.push_back(Move(fromPos.row, fromPos.column, piecePos, 2, false, true));
 					}
+
 				}
 
-				if (isConnected)
-				{
-					moves.push_back(Move(fromPos.row, fromPos.column, piecePos, 2));
-				}
-
-			}
-
-			if (kingRight) {
-				bool isConnected = true;
-				for (int i = 1; i <= 2; i++) {
-					if (board[piecePos][4 + i].hasPiece()) {
-						isConnected = false;
-						break;
+				if (kingRight) {
+					if (bitboard.canCastle(true, fromPos))
+					{
+						moves.push_back(Move(fromPos.row, fromPos.column, piecePos, 6, false, true));
 					}
-				}
 
-				if (isConnected)
-				{
-					moves.push_back(Move(fromPos.row, fromPos.column, piecePos, 6));
 				}
-
 			}
 
 		}
@@ -314,12 +303,22 @@ namespace chess {
 			int dir = (piece->getColor() == Color::White) ? -1 : 1;   // move direction
 			int startRow = (piece->getColor() == Color::White) ? 6 : 1;
 			int enPassantRow = (piece->getColor() == Color::White) ? 3 : 4;
+			int promotionRow = (piece->getColor() == Color::White) ? 0 : 7;
 
 			// 1️⃣ Single push
 			int r1 = row + dir;
 			if (isInside(r1, col) && !board[r1][col].hasPiece()) {
-				moves.push_back(Move(row, col, r1, col));
+				if (r1 != promotionRow) {
 
+					moves.push_back(Move(row, col, r1, col));
+				}
+				else {
+					moves.push_back(Move(row, col, r1, col, false, false, chess::PieceType::Queen));
+					moves.push_back(Move(row, col, r1, col, false, false, chess::PieceType::Rook));
+					moves.push_back(Move(row, col, r1, col, false, false, chess::PieceType::Bishop));
+					moves.push_back(Move(row, col, r1, col, false, false, chess::PieceType::Knight));
+
+				}
 				// 2️⃣ Double push from start
 				int r2 = row + 2 * dir;
 				if (row == startRow && !board[r2][col].hasPiece()) {
@@ -335,14 +334,23 @@ namespace chess {
 
 				if (isInside(rr, cc) && board[rr][cc].hasPiece()) {
 					if (board[rr][cc].getPiece()->getColor() != piece->getColor()) {
-						moves.push_back(Move(row, col, rr, cc));
+						if (rr != promotionRow) {
+
+							moves.push_back(Move(row, col, rr, cc));
+						}
+						else {
+							moves.push_back(Move(row, col, rr, cc, false, false, chess::PieceType::Queen));
+							moves.push_back(Move(row, col, rr, cc, false, false, chess::PieceType::Rook));
+							moves.push_back(Move(row, col, rr, cc, false, false, chess::PieceType::Bishop));
+							moves.push_back(Move(row, col, rr, cc, false, false, chess::PieceType::Knight));
+						}
 					}
 				}
 			}
 			// 4️⃣ En passant
 			if (row == enPassantRow && !history.empty()) {
 
-				auto lastMove = history.back();
+				auto lastMove = history.back().move;
 
 				for (int d = 0; d < 2; d++) {
 					int cc = col + dc[d];
@@ -355,7 +363,12 @@ namespace chess {
 
 					// the last move ended on that square
 					if (lastMove.getToPos() == chess::Position(row, cc)) {
-						moves.push_back(Move(row, col, row + dir, cc));
+
+						auto enPassantMove = Move(row, col, row + dir, cc, true);
+						if (!bitboard.canEnPassant(enPassantMove)) {
+							moves.push_back(enPassantMove);
+
+						}
 					}
 				}
 			}
@@ -379,7 +392,7 @@ namespace chess {
 	}
 	std::vector<chess::Move> Board::getAllLegalMoves() {
 		std::vector<Move> legalMoves;
-		bitboard.loadBitboard(board);
+		bitboard.loadBitboard(board, sideToMove);
 		uint64_t controled = bitboard.controledSquares(!sideToMove);
 		int kingIndex = bitboard.getKingIndex(sideToMove);
 
@@ -394,14 +407,13 @@ namespace chess {
 		auto pinned = bitboard.getPinnedPieces();
 		std::unordered_set<int> pinnedPieces = pinned.first;
 		auto pinMask = pinned.second;
-		auto v = Position::indexToPos("E4");
-		auto k = Bitboard::positionToNum(v);
 
 		for (Move mv : pseudoMoves) {
 			Position fromPos = mv.getFromPos();
 			Position toPos = mv.getToPos();
 			int fromPosNum = chess::Bitboard::positionToNum(fromPos);
 			int toPosNum = chess::Bitboard::positionToNum(toPos);
+			auto k = sideToMove;
 			if (this->isCheck()) {
 				std::pair<uint64_t, uint64_t> mask = bitboard.getCheckMask(kingIndex, sideToMove, attackers);
 				uint64_t checkMask = mask.first;
@@ -415,10 +427,22 @@ namespace chess {
 					}
 				}
 				else {
+					// --- NON-KING LOGIC ---
+					bool resolvesCheck = (checkMask & (1ULL << toPosNum));
 
-				if ((checkMask & (1ULL << toPosNum))) {
-					legalMoves.push_back(mv);
-				}
+					bool satisfiesPin = true;
+
+					if (pinnedPieces.count(fromPosNum)) {
+						std::unordered_set<int> allowedPinMoves = bitboard.getBitList(pinMask[fromPosNum]);
+
+						if (!allowedPinMoves.count(toPosNum)) {
+							satisfiesPin = false; // It moves off the pin ray
+						}
+					}
+
+					if (resolvesCheck && satisfiesPin) {
+						legalMoves.push_back(mv);
+					}
 				}
 			}
 			else {
@@ -429,10 +453,10 @@ namespace chess {
 						legalMoves.push_back(mv);
 					}
 				}
-				if (board[fromPos.row][fromPos.column].isKing()) {
+				else if (board[fromPos.row][fromPos.column].isKing()) {
 					if (!(controled & (1ULL << toPosNum))) {
-							legalMoves.push_back(mv);
-						
+						legalMoves.push_back(mv);
+
 					}
 				}
 				else {
@@ -446,8 +470,160 @@ namespace chess {
 		return legalMoves;
 
 	}
+	void Board::rookCastling(chess::Position pos,Color pieceColor) {
+		if (pos.column == 0) {
+			if (pieceColor == Color::White) {
+				castling.whiteQueen = false;
+			}
+			else {
+				castling.blackQueen = false;
+			}
+		}
+		else if (pos.column == 7) {
+			if (pieceColor == Color::White) {
+				castling.whiteKing = false;
+			}
+			else {
+				castling.blackKing = false;
+			}
+		}
+	}
+	void Board::makeMove(chess::Move move) {
+		chess::Position fromPos = move.getFromPos();
+		chess::Position toPos = move.getToPos();
 
 
+
+		chess::PieceType pieceType = board[fromPos.row][fromPos.column].getPiece()->getPieceType();
+		chess::Color pieceColor = board[fromPos.row][fromPos.column].getPiece()->getColor();
+		chess::CastlingRights previousCastling = castling;
+		auto k = move.getMoveText();
+		sideToMove = !sideToMove;
+		board[fromPos.row][fromPos.column].removePiece();
+
+		if (move.isCastling()) {
+			int pieceRow = (pieceColor == Color::White) ? 7 : 0;
+			if (toPos.column == 6) {
+				board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
+				board[toPos.row][7].removePiece();
+				board[toPos.row][5].addPiece(chess::createPiece(chess::PieceType::Rook, pieceColor));
+			}
+			else {
+				board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
+				board[toPos.row][0].removePiece();
+				board[toPos.row][3].addPiece(chess::createPiece(chess::PieceType::Rook, pieceColor));
+
+			}
+			castling.castlingFinished();
+			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, false, true);
+			history.push_back(gameState);
+			return;
+		}
+		if (move.isEnPassant()) {
+			board[fromPos.row][toPos.column].removePiece();
+			board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
+
+			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, true, false, false, pieceType);
+			history.push_back(gameState);
+			return;
+
+		}
+		if (pieceType == chess::PieceType::King) {
+			if (pieceColor == Color::White) {
+				castling.whiteKing = false;
+				castling.whiteQueen = false;
+			}
+			else {
+				castling.blackKing = false;
+				castling.blackQueen = false;
+			}
+		}
+		if (pieceType == chess::PieceType::Rook) {
+			rookCastling(fromPos, pieceColor);
+		}
+		if (move.getPromotionPiece() == chess::PieceType::None) {
+			if (board[toPos.row][toPos.column].hasPiece()) {
+				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece()->getPieceType();
+				if (capturedPieceType == chess::PieceType::Rook) {
+
+					rookCastling(toPos, !pieceColor);
+				}
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, false, false, capturedPieceType);
+				history.push_back(gameState);
+			}
+			else {
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling);
+				history.push_back(gameState);
+			}
+			board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
+		}
+		else {
+
+			if (board[toPos.row][toPos.column].hasPiece()) {
+				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece()->getPieceType();
+				if (capturedPieceType == chess::PieceType::Rook) {
+
+					rookCastling(toPos, !pieceColor);
+				}
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, true, false, capturedPieceType);
+				history.push_back(gameState);
+			}
+			else {
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, true, false);
+				history.push_back(gameState);
+			}
+			board[toPos.row][toPos.column].addPiece(chess::createPiece(move.getPromotionPiece(), pieceColor));
+		}
+		//bitboard.loadBitboard(board);
+
+	}
+	void Board::unmakeMove() {
+		GameState lastState = history.back();
+		history.pop_back();
+		sideToMove = !sideToMove;
+		castling = lastState.previousCastlingRights;
+		chess::Position fromPos = lastState.move.getFromPos();
+		chess::Position toPos = lastState.move.getToPos();
+		board[toPos.row][toPos.column].removePiece();
+		if (lastState.enPassant) {
+			board[fromPos.row][fromPos.column].addPiece(createPiece(chess::PieceType::Pawn, lastState.moveColor));
+			board[fromPos.row][toPos.column].addPiece(createPiece(chess::PieceType::Pawn, !lastState.moveColor));
+
+			return;
+		}
+		if (lastState.isPromotion) {
+			board[fromPos.row][fromPos.column].addPiece(createPiece(chess::PieceType::Pawn, lastState.moveColor));
+
+			if (lastState.isCapture) {
+				board[toPos.row][toPos.column].addPiece(createPiece(lastState.capturedPiece, !lastState.moveColor));
+			}
+			return;
+		}
+		if (lastState.isCastling) {
+			int pieceRow = (lastState.moveColor == Color::White) ? 7 : 0;
+			if (toPos.column == 6) {
+				board[fromPos.row][fromPos.column].addPiece(chess::createPiece(chess::PieceType::King, lastState.moveColor));
+
+				board[toPos.row][5].removePiece();
+				board[toPos.row][7].addPiece(chess::createPiece(chess::PieceType::Rook, lastState.moveColor));
+			}
+			else {
+				board[fromPos.row][fromPos.column].addPiece(chess::createPiece(chess::PieceType::King, lastState.moveColor));
+				board[toPos.row][3].removePiece();
+				board[toPos.row][0].addPiece(chess::createPiece(chess::PieceType::Rook, lastState.moveColor));
+
+			}
+			return;
+		}
+
+		board[fromPos.row][fromPos.column].addPiece(chess::createPiece(lastState.playedPiece, lastState.moveColor));
+		if (lastState.isCapture) {
+
+			board[toPos.row][toPos.column].addPiece(chess::createPiece(lastState.capturedPiece, !lastState.moveColor));
+		}
+
+		//bitboard.loadBitboard(board);
+	}
 	bool Board::isCheck() {
 
 		return bitboard.isCheck(sideToMove);

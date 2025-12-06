@@ -11,6 +11,7 @@ namespace chess {
 	enum class PieceType { Pawn, Knight, Bishop, Rook, Queen, King, None };
 	class Piece;
 	std::unique_ptr<Piece> createPieceFromChar(char c);
+	std::unique_ptr<Piece> createPiece(chess::PieceType pieceType, chess::Color color);
 
 	class Piece {
 	protected:

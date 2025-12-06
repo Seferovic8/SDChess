@@ -134,6 +134,7 @@
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="SDchess.cpp" />
     <ClCompile Include="Square.cpp" />
+    <ClCompile Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitboard.h" />
