@@ -10,18 +10,18 @@ namespace chess {
 	private: 
 		int _row, _column;
 		std::string _index;
-		std::unique_ptr<Piece> _piece;
+		Piece _piece;
 	public:
 		Square(); // default constructor
 
-		Square(int row, int column, std::unique_ptr<Piece> piece =nullptr);
-		Square(std::string squareIndex, std::unique_ptr<Piece> piece =nullptr);
+		Square(int row, int column, Piece piece =Piece(chess::Color::White,chess::PieceType::None));
+		Square(std::string squareIndex, Piece piece = Piece(chess::Color::White, chess::PieceType::None));
 		char getLabel() const;
 		bool hasPiece() const;
 		chess::Position getPosition();
-		Piece* getPiece();
+		Piece getPiece();
 		void removePiece();
-		void addPiece(std::unique_ptr<Piece> piece);
+		void addPiece(Piece piece);
 		bool isKing() const;
 	};
 }

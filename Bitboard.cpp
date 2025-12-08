@@ -39,21 +39,21 @@ namespace chess {
 				auto piece = board[r][c].getPiece();
 				int sq = (7 - r) * 8 + c; // convert to 0–63
 
-				if (piece->getColor() == Color::White) {
-					if (piece->getPieceType() == PieceType::Pawn)   whitePawns |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Knight) whiteKnights |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Bishop) whiteBishops |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Rook)   whiteRooks |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Queen)  whiteQueens |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::King)   whiteKings |= (1ULL << sq);
+				if (piece.getColor() == Color::White) {
+					if (piece.getPieceType() == PieceType::Pawn)   whitePawns |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Knight) whiteKnights |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Bishop) whiteBishops |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Rook)   whiteRooks |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Queen)  whiteQueens |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::King)   whiteKings |= (1ULL << sq);
 				}
 				else { // Black pieces
-					if (piece->getPieceType() == PieceType::Pawn)   blackPawns |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Knight) blackKnights |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Bishop) blackBishops |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Rook)   blackRooks |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::Queen)  blackQueens |= (1ULL << sq);
-					else if (piece->getPieceType() == PieceType::King)   blackKings |= (1ULL << sq);
+					if (piece.getPieceType() == PieceType::Pawn)   blackPawns |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Knight) blackKnights |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Bishop) blackBishops |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Rook)   blackRooks |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::Queen)  blackQueens |= (1ULL << sq);
+					else if (piece.getPieceType() == PieceType::King)   blackKings |= (1ULL << sq);
 				}
 			}
 		}

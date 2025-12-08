@@ -17,10 +17,10 @@ namespace chess {
 			for (int c = 0; c < 8; c++) {
 				if (r == 0 || r == 1 || r == 6 || r == 7) {
 					if (r == 1) {
-						board[r][c] = Square(r, c, std::make_unique<Pawn>(Color::White));
+						board[r][c] = Square(r, c, Piece(Color::White,chess::PieceType::Pawn));
 					}
 					else if (r == 6) {
-						board[r][c] = Square(r, c, std::make_unique<Pawn>(Color::Black));
+						board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Pawn));
 					}
 					else {
 
@@ -28,79 +28,79 @@ namespace chess {
 						case 0: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Rook>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Rook));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Rook>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Rook));
 							}
 							break;
 						}
 						case 1: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Knight>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Knight));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Knight>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Knight));
 							}
 							break;
 						}
 						case 2: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Bishop>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Bishop));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Bishop>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Bishop));
 							}
 							break;
 						}
 						case 3: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Queen>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Queen));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Queen>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Queen));
 							}
 							break;
 						}
 						case 4: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<King>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::King));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<King>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::King));
 							}
 							break;
 						}
 						case 5: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Bishop>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Bishop));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Bishop>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Bishop));
 							}
 							break;
 						}
 						case 6: {
 
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Knight>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Knight));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Knight>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Knight));
 							}
 							break;
 						}
 						case 7: {
 							if (r == 0) {
-								board[r][c] = Square(r, c, std::make_unique<Rook>(Color::White));
+								board[r][c] = Square(r, c, Piece(Color::White, chess::PieceType::Rook));
 							}
 							else {
-								board[r][c] = Square(r, c, std::make_unique<Rook>(Color::Black));
+								board[r][c] = Square(r, c, Piece(Color::Black, chess::PieceType::Rook));
 							}
 							break;
 						}
@@ -197,49 +197,19 @@ namespace chess {
 		return !(r > 7 || r < 0 || c>7 || c < 0);
 	}
 	std::vector<chess::Move> Board::generatePieceMoves(chess::Position fromPos) {
-		Piece* piece = board[fromPos.row][fromPos.column].getPiece();
-		Color pieceColor = piece->getColor();
+		Piece piece = board[fromPos.row][fromPos.column].getPiece();
+		Color pieceColor = piece.getColor();
 		std::vector<chess::Move> moves;
-		auto dirs = piece->directions();
-		/*if (piece->getPieceType() == PieceType::Queen) {
-			for (int toSq : bitboard.getAllQueenMoves(chess::Bitboard::positionToNum(fromPos), pieceColor)) {
-				auto pos = chess::Bitboard::numToPosition(toSq);
-				moves.push_back(Move(fromPos.row, fromPos.column, pos.row, pos.column));
-			}
-		}
-		if (piece->getPieceType() == PieceType::Rook) {
-			for (int toSq : bitboard.getAllRookMoves(chess::Bitboard::positionToNum(fromPos), pieceColor)) {
-				auto pos = chess::Bitboard::numToPosition(toSq);
-				moves.push_back(Move(fromPos.row, fromPos.column, pos.row, pos.column));
-			}
-		}
-		if (piece->getPieceType() == PieceType::Bishop) {
-			for (int toSq : bitboard.getAllBishopMoves(chess::Bitboard::positionToNum(fromPos), pieceColor)) {
-				auto pos = chess::Bitboard::numToPosition(toSq);
-				moves.push_back(Move(fromPos.row, fromPos.column, pos.row, pos.column));
-			}
-		}
-		if (piece->getPieceType() == PieceType::Knight) {
-			for (int toSq : bitboard.getAllKnightMoves(chess::Bitboard::positionToNum(fromPos), pieceColor)) {
-				auto pos = chess::Bitboard::numToPosition(toSq);
-				moves.push_back(Move(fromPos.row, fromPos.column, pos.row, pos.column));
-			}
-		}
-		if (piece->getPieceType() == PieceType::King) {
-			for (int toSq : bitboard.getAllKingMoves(chess::Bitboard::positionToNum(fromPos), pieceColor)) {
-				auto pos = chess::Bitboard::numToPosition(toSq);
-				moves.push_back(Move(fromPos.row, fromPos.column, pos.row, pos.column));
-			}
-		}*/
+		auto dirs = piece.directions();
 		for (chess::Position direction : dirs) {
-			if (piece->isSliding()) {
+			if (piece.isSliding()) {
 				int row = fromPos.row;
 				int col = fromPos.column;
 				row += direction.row;
 				col += direction.column;
 				while (isInside(row, col)) {
 					if (board[row][col].hasPiece()) {
-						if (piece->getColor() != board[row][col].getPiece()->getColor()) {
+						if (piece.getColor() != board[row][col].getPiece().getColor()) {
 							moves.push_back(Move(fromPos.row, fromPos.column, row, col));
 						}
 						break;
@@ -258,7 +228,7 @@ namespace chess {
 				int col = fromPos.column + direction.column;
 				if (isInside(row, col)) {
 					if (board[row][col].hasPiece()) {
-						if (piece->getColor() != board[row][col].getPiece()->getColor()) {
+						if (piece.getColor() != board[row][col].getPiece().getColor()) {
 							moves.push_back(Move(fromPos.row, fromPos.column, row, col));
 						}
 					}
@@ -271,12 +241,12 @@ namespace chess {
 		}
 		if (!this->isCheck()) {
 
-			if (piece->getPieceType() == PieceType::King) {
+			if (piece.getPieceType() == PieceType::King) {
 				int row = fromPos.row;
 				int col = fromPos.column;
-				int piecePos = (piece->getColor() == Color::White) ? 7 : 0;
-				bool& kingRight = (piece->getColor() == Color::White) ? castling.whiteKing : castling.blackKing;
-				bool& queenRight = (piece->getColor() == Color::White) ? castling.whiteQueen : castling.blackQueen;
+				int piecePos = (piece.getColor() == Color::White) ? 7 : 0;
+				bool& kingRight = (piece.getColor() == Color::White) ? castling.whiteKing : castling.blackKing;
+				bool& queenRight = (piece.getColor() == Color::White) ? castling.whiteQueen : castling.blackQueen;
 				if (queenRight) {
 
 
@@ -297,17 +267,18 @@ namespace chess {
 			}
 
 		}
-		if (piece->getPieceType() == PieceType::Pawn) {
+		if (piece.getPieceType() == PieceType::Pawn) {
 			int row = fromPos.row;
 			int col = fromPos.column;
-			int dir = (piece->getColor() == Color::White) ? -1 : 1;   // move direction
-			int startRow = (piece->getColor() == Color::White) ? 6 : 1;
-			int enPassantRow = (piece->getColor() == Color::White) ? 3 : 4;
-			int promotionRow = (piece->getColor() == Color::White) ? 0 : 7;
+			int dir = (piece.getColor() == Color::White) ? -1 : 1;   // move direction
+			int startRow = (piece.getColor() == Color::White) ? 6 : 1;
+			int enPassantRow = (piece.getColor() == Color::White) ? 3 : 4;
+			int promotionRow = (piece.getColor() == Color::White) ? 0 : 7;
 
 			// 1️⃣ Single push
 			int r1 = row + dir;
 			if (isInside(r1, col) && !board[r1][col].hasPiece()) {
+
 				if (r1 != promotionRow) {
 
 					moves.push_back(Move(row, col, r1, col));
@@ -333,9 +304,8 @@ namespace chess {
 				int rr = row + dir;
 
 				if (isInside(rr, cc) && board[rr][cc].hasPiece()) {
-					if (board[rr][cc].getPiece()->getColor() != piece->getColor()) {
+					if (board[rr][cc].getPiece().getColor() != piece.getColor()) {
 						if (rr != promotionRow) {
-
 							moves.push_back(Move(row, col, rr, cc));
 						}
 						else {
@@ -351,15 +321,18 @@ namespace chess {
 			if (row == enPassantRow && !history.empty()) {
 
 				auto lastMove = history.back().move;
-
 				for (int d = 0; d < 2; d++) {
 					int cc = col + dc[d];
 					if (!isInside(row, cc)) continue;
 
 					if (!board[row][cc].hasPiece()) continue;
 
+					if (board[row][cc].getPiece().getPieceType()!=chess::PieceType::Pawn) continue;
+
 					auto target = board[row][cc].getPiece();
-					if (!(piece->getPieceType() == PieceType::Pawn)) continue;
+					if (!(piece.getPieceType() == PieceType::Pawn)) continue;
+
+					if (lastMove.getFromPos().row!=1 && lastMove.getFromPos().row != 6) continue;
 
 					// the last move ended on that square
 					if (lastMove.getToPos() == chess::Position(row, cc)) {
@@ -373,6 +346,7 @@ namespace chess {
 				}
 			}
 		}
+
 		return moves;
 	}
 	std::vector<chess::Move> Board::getAllPseudoLegalMoves() {
@@ -380,7 +354,7 @@ namespace chess {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (!board[i][j].hasPiece()) continue;
-				auto pieceColor = board[i][j].getPiece()->getColor();
+				auto pieceColor = board[i][j].getPiece().getColor();
 				if (pieceColor == sideToMove) {
 					auto pieceMoves = generatePieceMoves(chess::Position(i, j));
 					allMoves.insert(allMoves.end(), pieceMoves.begin(), pieceMoves.end());
@@ -494,8 +468,8 @@ namespace chess {
 
 
 
-		chess::PieceType pieceType = board[fromPos.row][fromPos.column].getPiece()->getPieceType();
-		chess::Color pieceColor = board[fromPos.row][fromPos.column].getPiece()->getColor();
+		chess::PieceType pieceType = board[fromPos.row][fromPos.column].getPiece().getPieceType();
+		chess::Color pieceColor = board[fromPos.row][fromPos.column].getPiece().getColor();
 		chess::CastlingRights previousCastling = castling;
 		auto k = move.getMoveText();
 		sideToMove = !sideToMove;
@@ -543,7 +517,7 @@ namespace chess {
 		}
 		if (move.getPromotionPiece() == chess::PieceType::None) {
 			if (board[toPos.row][toPos.column].hasPiece()) {
-				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece()->getPieceType();
+				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece().getPieceType();
 				if (capturedPieceType == chess::PieceType::Rook) {
 
 					rookCastling(toPos, !pieceColor);
@@ -560,7 +534,7 @@ namespace chess {
 		else {
 
 			if (board[toPos.row][toPos.column].hasPiece()) {
-				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece()->getPieceType();
+				chess::PieceType capturedPieceType = board[toPos.row][toPos.column].getPiece().getPieceType();
 				if (capturedPieceType == chess::PieceType::Rook) {
 
 					rookCastling(toPos, !pieceColor);

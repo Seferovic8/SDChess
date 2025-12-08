@@ -10,28 +10,28 @@
 
 namespace chess {
 	Square::Square()
-		: _row(0), _column(0), _piece(nullptr),_index("A1")
+		: _row(0), _column(0), _piece(Piece(chess::Color::White,chess::PieceType::None)),_index("A1")
 	{}
 
-	Square::Square(int r, int c, std::unique_ptr<Piece> piece):_row(r),_column(c), _piece(std::move(piece)) {
+	Square::Square(int r, int c, Piece piece):_row(r),_column(c), _piece(piece) {
 		_index = nameColumns[c] + std::to_string(r);
 	}
-	Square::Square(std::string squareIndex, std::unique_ptr<Piece> piece) :_piece(std::move(piece)),_index(squareIndex) {
+	Square::Square(std::string squareIndex, Piece piece) :_piece(piece),_index(squareIndex) {
 		chess::Position position = chess::Position::indexToPos(squareIndex);
 		_row = position.row;
 		_column = position.column;
 	}
 
 
-	char Square::getLabel() const {
-		if (_piece == nullptr) {
+	char Square::getLabel()const {
+		if (_piece.getPieceType() == chess::PieceType::None) {
 			return '.';
 		}
 		
-		return _piece->getLabel();
+		return _piece.getLabel();
 	}
 	bool Square::hasPiece( )const {
-		if (_piece == nullptr) {
+		if (_piece.getPieceType() == chess::PieceType::None) {
 			return false;
 		}
 		return true;
@@ -39,17 +39,17 @@ namespace chess {
 	chess::Position Square::getPosition() {
 		return chess::Position( _row, _column);
 	}
-	chess::Piece* Square::getPiece()  {
-		return _piece.get();
+	chess::Piece Square::getPiece()  {
+		return _piece;
 	}
 	bool Square::isKing() const {
-		return hasPiece() && _piece->getPieceType() == PieceType::King;
+		return hasPiece() && _piece.getPieceType() == PieceType::King;
 	}
 	void Square::removePiece() {
-		_piece = nullptr;
+		_piece = Piece(Color::White,chess::PieceType::None);
 	}
-	void Square::addPiece(std::unique_ptr<Piece> piece) {
-		_piece = std::move(piece);
+	void Square::addPiece(Piece piece) {
+		_piece = piece;
 	}
 }
 //bool Board::canMove(int fr, int fc, int tr, int tc) const {

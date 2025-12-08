@@ -5,7 +5,8 @@
 
 
 namespace chess {
-	Piece::Piece(char label,Color color,PieceType pieceType):_color(color),_pieceType(pieceType) {
+	Piece::Piece(Color color,PieceType pieceType):_color(color),_pieceType(pieceType) {
+		char label = getPieceChar(pieceType);
 		if (color == Color::White) {
 			_label = label;
 	}
@@ -16,94 +17,125 @@ namespace chess {
 	PieceType Piece::getPieceType() const {
 		return _pieceType;
 	}
-	char Piece::getLabel() {
+	char Piece::getLabel() const {
 		return _label;
 	}
 	Color Piece::getColor() {
 		return _color;
 	}
-	Pawn::Pawn(Color color):Piece('P',color,PieceType::Pawn){}
-	Queen::Queen(Color color):Piece('Q', color, PieceType::Queen){}
-	King::King(Color color):Piece('K', color, PieceType::King){}
-	Bishop::Bishop(Color color):Piece('B', color, PieceType::Bishop){}
-	Knight::Knight(Color color):Piece('N', color, PieceType::Knight){}
-	Rook::Rook(Color color):Piece('R', color, PieceType::Rook){}
-	std::unique_ptr<Piece> createPieceFromChar(char c) {
+	bool Piece::isSliding() const {
+		if (_pieceType == chess::PieceType::Bishop || _pieceType == chess::PieceType::Rook || _pieceType == chess::PieceType::Queen) return true;
+		return false;
+	}
+	std::vector<chess::Position> Piece::directions() const {
+		switch (_pieceType)
+		{
+		case chess::PieceType::Pawn:
+			return {};
+			break;
+		case chess::PieceType::Knight:
+			return {
+				{2,1}, {2,-1}, {-2,1}, {-2,-1},
+				{1,2}, {1,-2}, {-1,2}, {-1,-2}
+			};
+			break;
+		case chess::PieceType::Bishop:
+			return {
+				{1,1}, {1,-1}, {-1,1}, {-1,-1}
+			};
+			break;
+		case chess::PieceType::Rook:
+			return {
+				{1,0}, {-1,0}, {0,1}, {0,-1}
+			};
+			break;
+		case chess::PieceType::Queen:
+			return {
+				{1,0}, {-1,0}, {0,1}, {0,-1},      // Rook directions (vertical + horizontal)
+				{1,1}, {1,-1}, {-1,1}, {-1,-1}     // Bishop directions (diagonals)
+			};
+			break;
+		case chess::PieceType::King:
+			return {
+				{1,0}, {-1,0}, {0,1}, {0,-1},     // vertical & horizontal
+				{1,1}, {1,-1}, {-1,1}, {-1,-1}    // diagonals
+			};
+			break;
+		case chess::PieceType::None:
+			return {};
+			break;
+		default:
+			return {};
+		}
+	};
+
+
+	char getPieceChar(chess::PieceType pieceType) {
+		switch (pieceType)
+		{
+		case chess::PieceType::Pawn:
+			return 'P';
+			break;
+		case chess::PieceType::Knight:
+			return 'N';
+			break;
+		case chess::PieceType::Bishop:
+			return 'B';
+			break;
+		case chess::PieceType::Rook:
+			return 'R';
+			break;
+		case chess::PieceType::Queen:
+			return 'Q';
+			break;
+		case chess::PieceType::King:
+			return 'K';
+			break;
+		case chess::PieceType::None:
+			return 'none';
+			break;
+		default:
+			break;
+		}
+	}
+	Piece createPieceFromChar(char c) {
 		Color color = std::isupper(c) ? Color::White : Color::Black;
 
 		switch (std::tolower(c)) {
 		case 'p':
-			return std::make_unique<Pawn>(color);
+			return Piece(color,chess::PieceType::Pawn);
 		case 'r':
-			return std::make_unique<Rook>(color);
+			return Piece(color, chess::PieceType::Rook);
 		case 'n':
-			return std::make_unique<Knight>(color);
+			return Piece(color, chess::PieceType::Knight);
 		case 'b':
-			return std::make_unique<Bishop>(color);
+			return Piece(color, chess::PieceType::Bishop);
 		case 'q':
-			return std::make_unique<Queen>(color);
+			return Piece(color, chess::PieceType::Queen);
 		case 'k':
-			return std::make_unique<King>(color);
+			return Piece(color, chess::PieceType::King);
 		default:
-			return nullptr; // unrecognized char, no piece
+			return Piece(color, chess::PieceType::None); // unrecognized char, no piece
 		}
 	}
-	std::unique_ptr<Piece> createPiece(chess::PieceType pieceType, chess::Color color) {
+	Piece createPiece(chess::PieceType pieceType, chess::Color color) {
 
 		switch (pieceType) {
 		case chess::PieceType::Pawn:
-			return std::make_unique<Pawn>(color);
+			return Piece(color, chess::PieceType::Pawn);
 		case chess::PieceType::Rook:
-			return std::make_unique<Rook>(color);
+			return Piece(color, chess::PieceType::Rook);
 		case chess::PieceType::Knight:
-			return std::make_unique<Knight>(color);
+			return Piece(color, chess::PieceType::Knight);
 		case chess::PieceType::Bishop:
-			return std::make_unique<Bishop>(color);
+			return Piece(color, chess::PieceType::Bishop);
 		case chess::PieceType::Queen:
-			return std::make_unique<Queen>(color);
+			return Piece(color, chess::PieceType::Queen);
 		case chess::PieceType::King:
-			return std::make_unique<King>(color);
+			return Piece(color, chess::PieceType::King);
 		default:
-			return nullptr; // unrecognized char, no piece
+			return Piece(color, chess::PieceType::None); // unrecognized char, no piece
 		}
-	}
-	std::vector<chess::Position> King::directions() const {
-		return {
-			{1,0}, {-1,0}, {0,1}, {0,-1},     // vertical & horizontal
-			{1,1}, {1,-1}, {-1,1}, {-1,-1}    // diagonals
-		};
-	}	
-
-	std::vector<chess::Position> Queen::directions() const {
-		return {
-			{1,0}, {-1,0}, {0,1}, {0,-1},      // Rook directions (vertical + horizontal)
-			{1,1}, {1,-1}, {-1,1}, {-1,-1}     // Bishop directions (diagonals)
-		};
-
-	}	
-	std::vector<chess::Position> Rook::directions() const {
-		return {
-	{1,0}, {-1,0}, {0,1}, {0,-1}
-		};
-	}	
-	std::vector<chess::Position> Bishop::directions() const {
-		return {
-	{1,1}, {1,-1}, {-1,1}, {-1,-1}
-		};
-
-	}	
-	std::vector<chess::Position> Knight::directions() const {
-		return {
-			{2,1}, {2,-1}, {-2,1}, {-2,-1},
-			{1,2}, {1,-2}, {-1,2}, {-1,-2}
-		};
-	}	
-	std::vector<chess::Position> Pawn::directions() const {
-		return {
-
-		};
-
-
 	}
 
 

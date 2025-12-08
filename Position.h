@@ -16,7 +16,7 @@ namespace chess {
 		Position(std::string squareIndex);
 		bool operator==(const Position& other)
 		{
-			return ((row=other.row)&&(column==other.column));
+			return ((row==other.row)&&(column==other.column));
 		}
 		static std::string squareToString(chess::Position position);
 		static chess::Position indexToPos(std::string squareName);
