@@ -4,12 +4,38 @@
 #include <unordered_set>
 
 #include<string>
-#include "Position.h";
-#include "Square.h";
-#include "Move.h";
+#include "Position.h"
+#include "Square.h"
+#include "Move.h"
 #include<vector>
 namespace chess {
+	struct IndexSet {
+		int numbers[64];
+		int n = 0;           // ✅ Renamed from 'count' to 'n'
+		uint64_t mask = 0;
+
+		void insert(int m) {
+			if ((mask >> m) & 1) return;
+
+			mask |= (1ULL << m);
+			numbers[n++] = m; // Update to use 'n'
+		}
+
+		// Now this function name is valid because the variable is named 'n'
+		int count(int m) const {
+			return (mask >> m) & 1;
+		}
+
+		int size() const { return n; } // Update to use 'n'
+
+		// Iterators
+		int* begin() { return &numbers[0]; }
+		int* end() { return &numbers[n]; }
+		const int* begin() const { return &numbers[0]; }
+		const int* end()   const { return &numbers[n]; }
+	};
 	using VectorBoard = std::vector<std::vector<Square>>;
+
 
 	class Bitboard {
 	private:
@@ -58,7 +84,7 @@ namespace chess {
 		void initDirectionTable();
 
 	public:
-		std::unordered_set<int> getBitList(uint64_t bb);
+		IndexSet getBitList(uint64_t bb);
 		static int positionToNum(chess::Position pos);
 		static chess::Position numToPosition(int sq);
 		Bitboard(); // default constructor
@@ -77,17 +103,17 @@ namespace chess {
 		uint64_t controledSquares(Color color);
 		uint64_t rayBetween(int kingSq, int attackerSq);
 		bool canCastle(bool kingSide, chess::Position fromPos);
-		std::vector<Move> generateKingMovesOnly(Color side);
+		MoveList generateKingMovesOnly(Color side);
 		bool isCheck(Color color) ;
-		std::pair<std::unordered_set<int>, std::array<uint64_t, 64>> getPinnedPieces();
+		std::pair<IndexSet, std::array<uint64_t, 64>> getPinnedPieces();
 
 
-		std::unordered_set<int> getAllQueenMoves(int sq, chess::Color color);
-		std::unordered_set<int> getAllRookMoves(int sq, chess::Color color);
-		std::unordered_set<int> getAllBishopMoves(int sq, chess::Color color);
-		std::unordered_set<int> getAllKingMoves(int sq, chess::Color color);
-		std::unordered_set<int> getAllKnightMoves(int sq, chess::Color color);
+		IndexSet getAllQueenMoves(int sq, chess::Color color);
+		IndexSet getAllRookMoves(int sq, chess::Color color);
+		IndexSet getAllBishopMoves(int sq, chess::Color color);
+		IndexSet getAllKingMoves(int sq, chess::Color color);
+		IndexSet getAllKnightMoves(int sq, chess::Color color);
 
-		void generatePawnMoves(std::vector<Move> moves);
+		void generatePawnMoves(MoveList moves);
 	};
 }

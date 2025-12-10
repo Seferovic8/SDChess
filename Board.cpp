@@ -196,10 +196,10 @@ namespace chess {
 	bool Board::isInside(int r, int c) {
 		return !(r > 7 || r < 0 || c>7 || c < 0);
 	}
-	std::vector<chess::Move> Board::generatePieceMoves(chess::Position fromPos) {
+	MoveList Board::generatePieceMoves(chess::Position fromPos) {
 		Piece piece = board[fromPos.row][fromPos.column].getPiece();
 		Color pieceColor = piece.getColor();
-		std::vector<chess::Move> moves;
+		MoveList moves;
 		auto dirs = piece.directions();
 		for (chess::Position direction : dirs) {
 			if (piece.isSliding()) {
@@ -349,8 +349,8 @@ namespace chess {
 
 		return moves;
 	}
-	std::vector<chess::Move> Board::getAllPseudoLegalMoves() {
-		std::vector<chess::Move> allMoves;
+	MoveList Board::getAllPseudoLegalMoves() {
+		MoveList allMoves;
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (!board[i][j].hasPiece()) continue;
@@ -364,14 +364,14 @@ namespace chess {
 		}
 		return allMoves;
 	}
-	std::vector<chess::Move> Board::getAllLegalMoves() {
-		std::vector<Move> legalMoves;
+	MoveList Board::getAllLegalMoves() {
+		MoveList legalMoves;
 		bitboard.loadBitboard(board, sideToMove);
 		uint64_t controled = bitboard.controledSquares(!sideToMove);
 		int kingIndex = bitboard.getKingIndex(sideToMove);
 
 		uint64_t attackers = bitboard.attackersToKing(sideToMove);
-		std::vector<chess::Move> pseudoMoves = getAllPseudoLegalMoves();
+		MoveList pseudoMoves = getAllPseudoLegalMoves();
 		if (this->isCheck()) {
 			int numAttackers = bitboard.getBitList(attackers).size();
 			if (numAttackers >= 2) {
@@ -379,7 +379,7 @@ namespace chess {
 			}
 		}
 		auto pinned = bitboard.getPinnedPieces();
-		std::unordered_set<int> pinnedPieces = pinned.first;
+		IndexSet pinnedPieces = pinned.first;
 		auto pinMask = pinned.second;
 
 		for (Move mv : pseudoMoves) {
@@ -407,7 +407,7 @@ namespace chess {
 					bool satisfiesPin = true;
 
 					if (pinnedPieces.count(fromPosNum)) {
-						std::unordered_set<int> allowedPinMoves = bitboard.getBitList(pinMask[fromPosNum]);
+						IndexSet allowedPinMoves = bitboard.getBitList(pinMask[fromPosNum]);
 
 						if (!allowedPinMoves.count(toPosNum)) {
 							satisfiesPin = false; // It moves off the pin ray
@@ -422,7 +422,7 @@ namespace chess {
 			else {
 
 				if (pinnedPieces.count(fromPosNum)) {
-					std::unordered_set<int> allowedPinMoves = bitboard.getBitList(pinMask[fromPosNum]);
+					IndexSet allowedPinMoves = bitboard.getBitList(pinMask[fromPosNum]);
 					if (allowedPinMoves.count(toPosNum)) {
 						legalMoves.push_back(mv);
 					}

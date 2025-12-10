@@ -50,9 +50,9 @@ namespace chess {
 		Board();
 		Board(std::string fen);
 		void printBoard() const;
-		std::vector<chess::Move> generatePieceMoves(chess::Position fromPos);
-		std::vector<chess::Move> getAllPseudoLegalMoves();
-		std::vector<chess::Move> getAllLegalMoves();
+		MoveList generatePieceMoves(chess::Position fromPos);
+		MoveList getAllPseudoLegalMoves();
+		MoveList getAllLegalMoves();
 		bool isInside(int r, int c);
 		void rookCastling(chess::Position pos, Color pieceColor);
 		bool isCheck();

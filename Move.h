@@ -26,4 +26,38 @@ namespace chess {
 		bool isEnPassant() const;
 		bool isCastling() const;
 	};
+	struct MoveList {
+		Move moves[264];
+		int count = 0;
+		void push_back(const Move& m) {
+			moves[count++] = m;
+		}
+		Move* begin() {
+			return &moves[0];
+		}
+
+		Move* end() {
+			return &moves[count];
+		}
+
+		const Move* begin() const {
+			return &moves[0];
+		}
+		const Move* end() const {
+			return &moves[count];
+		}
+		template <typename Iterator>
+		void insert(Move* position, Iterator first, Iterator last) {
+
+
+			while (first != last) {
+				// Safety check: stop if we hit the array limit
+				if (count >= 264) break;
+
+				moves[count] = *first;
+				count++;
+				++first;
+			}
+		}
+	};
 }

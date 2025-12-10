@@ -400,8 +400,8 @@ namespace chess {
 		return attacks;
 	}
 
-	std::vector<Move> Bitboard::generateKingMovesOnly(Color side) {
-		std::vector<Move> moves;
+	MoveList Bitboard::generateKingMovesOnly(Color side) {
+		MoveList moves;
 		uint64_t kingBB = (side == Color::White) ? whiteKings : blackKings;
 		int from = lsb(kingBB);
 
@@ -521,8 +521,8 @@ namespace chess {
 		return attacks;
 	}
 
-	std::unordered_set<int> Bitboard::getBitList(uint64_t bb) {
-		std::unordered_set<int> lista;
+	IndexSet Bitboard::getBitList(uint64_t bb) {
+		IndexSet lista;
 		while (bb) {
 			int sq = lsb(bb);   // index of least-significant 1-bit
 			bb &= bb - 1;       // remove that bit
@@ -531,27 +531,27 @@ namespace chess {
 		return lista;
 	}
 
-	std::unordered_set<int> Bitboard::getAllQueenMoves(int sq, chess::Color color) {
+	IndexSet Bitboard::getAllQueenMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return getBitList((rookAttacksWithBlockers(sq, allPieces) | bishopAttacksWithBlockers(sq, allPieces)) & ~myPieces);
 	}
-	std::unordered_set<int> Bitboard::getAllBishopMoves(int sq, chess::Color color) {
+	IndexSet Bitboard::getAllBishopMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return getBitList(bishopAttacksWithBlockers(sq, allPieces) & ~myPieces);
 	}
-	std::unordered_set<int> Bitboard::getAllRookMoves(int sq, chess::Color color) {
+	IndexSet Bitboard::getAllRookMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return getBitList(rookAttacksWithBlockers(sq, allPieces) & ~myPieces);
 	}
-	std::unordered_set<int> Bitboard::getAllKnightMoves(int sq, chess::Color color) {
+	IndexSet Bitboard::getAllKnightMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return getBitList(knightMoves[sq] & ~myPieces);
 	}
-	std::unordered_set<int> Bitboard::getAllKingMoves(int sq, chess::Color color) {
+	IndexSet Bitboard::getAllKingMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return getBitList(kingMoves[sq] & ~myPieces);
 	}
-	std::pair<std::unordered_set<int>, std::array<uint64_t, 64>> Bitboard::getPinnedPieces() {
+	std::pair<IndexSet, std::array<uint64_t, 64>> Bitboard::getPinnedPieces() {
 		uint64_t pinnedPiecesMap = 0ULL;
 		std::array<uint64_t, 64> pinMask;
 		pinMask.fill(0ULL);

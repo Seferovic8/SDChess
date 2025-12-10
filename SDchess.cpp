@@ -89,7 +89,7 @@ int main()
    //auto move = chess::Move("E2","E4",false,false,chess::PieceType::None);
    //board.makeMove(move);
 
-  int numPositions = moveGenerationTest(board, 4);
+  int numPositions = moveGenerationTest(board, 5);
    std::cout << numPositions << std::endl;
    auto t2 = high_resolution_clock::now();
    auto ms_int = duration_cast<milliseconds>(t2 - t1);

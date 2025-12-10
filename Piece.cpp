@@ -28,44 +28,26 @@ namespace chess {
 		return false;
 	}
 	std::vector<chess::Position> Piece::directions() const {
-		switch (_pieceType)
-		{
-		case chess::PieceType::Pawn:
-			return {};
-			break;
+		switch (_pieceType) {
 		case chess::PieceType::Knight:
-			return {
-				{2,1}, {2,-1}, {-2,1}, {-2,-1},
-				{1,2}, {1,-2}, {-1,2}, {-1,-2}
-			};
-			break;
+			return KNIGHT_DIRS; // Returns a reference (Instant, 0 allocation)
+
 		case chess::PieceType::Bishop:
-			return {
-				{1,1}, {1,-1}, {-1,1}, {-1,-1}
-			};
-			break;
+			return BISHOP_DIRS;
+
 		case chess::PieceType::Rook:
-			return {
-				{1,0}, {-1,0}, {0,1}, {0,-1}
-			};
-			break;
+			return ROOK_DIRS;
+
 		case chess::PieceType::Queen:
-			return {
-				{1,0}, {-1,0}, {0,1}, {0,-1},      // Rook directions (vertical + horizontal)
-				{1,1}, {1,-1}, {-1,1}, {-1,-1}     // Bishop directions (diagonals)
-			};
-			break;
+			return QUEEN_DIRS;
+
 		case chess::PieceType::King:
-			return {
-				{1,0}, {-1,0}, {0,1}, {0,-1},     // vertical & horizontal
-				{1,1}, {1,-1}, {-1,1}, {-1,-1}    // diagonals
-			};
-			break;
+			return KING_DIRS;
+
+		case chess::PieceType::Pawn:
 		case chess::PieceType::None:
-			return {};
-			break;
 		default:
-			return {};
+			return NO_DIRS;
 		}
 	};
 

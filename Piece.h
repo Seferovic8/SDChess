@@ -4,6 +4,12 @@
 #include<vector>
 #include "Position.h";
 namespace chess {
+	const std::vector<chess::Position> KNIGHT_DIRS = { {2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {1,-2}, {-1,2}, {-1,-2} };
+	const std::vector<chess::Position> BISHOP_DIRS = { {1,1}, {1,-1}, {-1,1}, {-1,-1} };
+	const std::vector<chess::Position> ROOK_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1} };
+	const std::vector<chess::Position> QUEEN_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1} };
+	const std::vector<chess::Position> KING_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1} };
+	const std::vector<chess::Position> NO_DIRS = {};
 	enum class Color { White, Black };
 	inline Color operator!(Color c) {
 		return (c == Color::White) ? Color::Black : Color::White;
