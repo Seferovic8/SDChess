@@ -14,12 +14,16 @@ namespace chess {
 		Position(); //default 
 		Position(int r, int c);
 		Position(std::string squareIndex);
+		Position(int position);
 		bool operator==(const Position& other)
 		{
 			return ((row==other.row)&&(column==other.column));
 		}
 		static std::string squareToString(chess::Position position);
 		static chess::Position indexToPos(std::string squareName);
-		 int getNumberIndex();
+		static chess::Position numToPosition(int sq);
+		static int positionToNum(chess::Position pos);
+		static int flipPosition(int sq);
+		int getNumberIndex();
 	};
 }

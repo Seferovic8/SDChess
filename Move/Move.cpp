@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Move.h"
-#include "Square.h"
+#include "../Square/Square.h"
 
 //
 namespace chess {

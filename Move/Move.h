@@ -1,8 +1,8 @@
 #pragma once
 #include<iostream>
 #include<string>
-#include "Position.h";
-#include "Piece.h";
+#include "../Position/Position.h";
+#include "../Piece/Piece.h";
 #include<vector>
 namespace chess {
 

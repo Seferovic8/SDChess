@@ -1,11 +1,11 @@
 #pragma once
 #include<iostream>
 #include<string>
-#include "Square.h"
-#include "Bitboard.h"
+#include "../Square/Square.h"
+#include "../Bitboard/Bitboard.h"
 #include <array>   
-
-#include "Move.h"
+#include "evaluation_parameters.cpp"
+#include "../Move/Move.h"
 #include <vector>
 namespace chess {
 	using VectorBoard = std::vector<std::vector<Square>>;
@@ -45,19 +45,32 @@ namespace chess {
 		Bitboard bitboard;
 		std::vector<GameState> history;
 		CastlingRights castling;
+		Weights weights;
 	public:
 		Color sideToMove;
+		//Board.cpp
 		Board();
 		Board(std::string fen);
 		void printBoard() const;
+		bool isInside(int r, int c);
+		void makeMove(chess::Move);
+		void unmakeMove();
+
+		//Board_MoveGen.cpp
 		MoveList generatePieceMoves(chess::Position fromPos);
 		MoveList getAllPseudoLegalMoves();
 		MoveList getAllLegalMoves();
-		bool isInside(int r, int c);
 		void rookCastling(chess::Position pos, Color pieceColor);
 		bool isCheck();
-		bool isPinned();
-		void makeMove(chess::Move);
-		void unmakeMove();
+		bool isCheckMate();
+
+		//Board_Evaluation.cpp
+		int evaluate();
+		int getMaterialScore(Color color);
+		int getMobilityScore(Color color);
+		int getPositionScore(Color color);
+		Move findBestMove(int depth);
+		int minimax_alpha_beta(int depth, int alpha, int beta);
+
 	};
 }

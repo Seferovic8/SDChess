@@ -127,22 +127,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bitboard.cpp" />
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Move.cpp" />
-    <ClCompile Include="Piece.cpp" />
-    <ClCompile Include="Position.cpp" />
+    <ClCompile Include="Bitboard\Bitboard.cpp" />
+    <ClCompile Include="Bitboard\Bitboard_Moves.cpp" />
+    <ClCompile Include="Bitboard\Bitboard_Safety.cpp" />
+    <ClCompile Include="Board\Board.cpp" />
+    <ClCompile Include="Board\Board_Evaluation.cpp" />
+    <ClCompile Include="Board\Board_MoveGen.cpp" />
+    <ClCompile Include="Board\evaluation_parameters.cpp" />
+    <ClCompile Include="Move\Move.cpp" />
+    <ClCompile Include="Piece\Piece.cpp" />
+    <ClCompile Include="Position\Position.cpp" />
     <ClCompile Include="SDchess.cpp" />
-    <ClCompile Include="Square.cpp" />
+    <ClCompile Include="Square\Square.cpp" />
     <ClCompile Include="test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bitboard.h" />
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="Move.h" />
-    <ClInclude Include="Piece.h" />
-    <ClInclude Include="Position.h" />
-    <ClInclude Include="Square.h" />
+    <ClInclude Include="Bitboard\Bitboard.h" />
+    <ClInclude Include="Board\Board.h" />
+    <ClInclude Include="server.h" />
+    <ClInclude Include="httplib.h" />
+    <ClInclude Include="Move\Move.h" />
+    <ClInclude Include="Piece\Piece.h" />
+    <ClInclude Include="Position\Position.h" />
+    <ClInclude Include="Square\Square.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

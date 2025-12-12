@@ -2,13 +2,17 @@
 #include "Position.h"
 
 namespace chess {
-
 Position::Position() :row(0), column(0) {}
 Position::Position(int r, int c) :row(r), column(c) {}
 Position::Position(std::string squareIndex) {
 	chess::Position position = indexToPos(squareIndex);
 	row = position.row;
 	column = position.column;
+}
+Position::Position(int position) {
+	chess::Position pos = numToPosition(position);
+	row = pos.row;
+	column = pos.column;
 }
 std::string Position::squareToString(Position position) {
 	return (nameColumns[position.column] + std::to_string(8 - position.row));
@@ -26,5 +30,17 @@ int Position::getNumberIndex() {
 		//return pos;
 		return (7 - row) * 8 + column;
 }
-
+chess::Position Position::numToPosition(int sq) {
+	int row = 7 - (sq / 8);
+	int col = sq - (7 - row) * 8;
+	return chess::Position(row, col);
+}
+int  Position::positionToNum(chess::Position pos) {
+	return (7 - pos.row) * 8 + pos.column;
+}
+int Position::flipPosition(int pos) {
+	int row = pos / 8;
+	int col = pos % 8;
+	return (7 - row) * 8 + col;
+}
 }

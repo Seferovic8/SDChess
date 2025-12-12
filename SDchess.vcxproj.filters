@@ -18,46 +18,67 @@
     <ClCompile Include="SDchess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Square.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Piece.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Board.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Move.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Position.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bitboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="test.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitboard\Bitboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Move\Move.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board\Board.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\Position.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Piece\Piece.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Square\Square.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitboard\Bitboard_Moves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitboard\Bitboard_Safety.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board\Board_MoveGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board\Board_Evaluation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board\evaluation_parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Square.h">
+    <ClInclude Include="Bitboard\Bitboard.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Piece.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Move\Move.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Board\Board.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Move.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Position\Position.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Position.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Piece\Piece.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bitboard.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Square\Square.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="httplib.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

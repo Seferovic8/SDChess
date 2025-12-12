@@ -1,7 +1,7 @@
 #include<iostream>
 #include <string>
 #include <vector>
-#include "Square.h"
+#include "../Square/Square.h"
 
 
 namespace chess {

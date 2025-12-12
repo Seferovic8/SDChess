@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <list>
-#include "Position.h"
+#include "../Position/Position.h"
 #include "Square.h"
 
 

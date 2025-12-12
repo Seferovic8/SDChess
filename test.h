@@ -8,7 +8,7 @@
 
 #pragma comment(lib, "winhttp.lib")
 
-static std::pair<std::string, int>  testiram() {
+static std::pair<std::string, int>  testiram(int from, int to) {
     HINTERNET hSession = WinHttpOpen(L"SimpleGET/1.0",
         WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
         WINHTTP_NO_PROXY_NAME,
@@ -23,17 +23,26 @@ static std::pair<std::string, int>  testiram() {
 
 
     HINTERNET hRequest = WinHttpOpenRequest(
-        hConnect, L"GET", L"/", NULL,
+        hConnect, L"POST", L"/calculate", NULL,
         WINHTTP_NO_REFERER,
         WINHTTP_DEFAULT_ACCEPT_TYPES,
         0  // <-- plain HTTP, not secure
     );
 
 
-    BOOL result = WinHttpSendRequest(hRequest,
-        WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-        WINHTTP_NO_REQUEST_DATA, 0,
-        0, 0);
+    std::string body = "{ \"from\": " + std::to_string(from) +
+        ", \"to\": " + std::to_string(to) + " }";
+
+    // Convert body to UTF-16
+    BOOL result = WinHttpSendRequest(
+        hRequest,
+        L"Content-Type: application/json\r\n",
+        -1,
+        (LPVOID)body.c_str(),
+        body.size(),
+        body.size(),
+        0
+    );
 
     if (result)
         result = WinHttpReceiveResponse(hRequest, NULL);
