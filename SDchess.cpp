@@ -70,9 +70,16 @@ int main()
 	//std::string fen = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
-	std::string fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
+	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	auto board = chess::Board(fen);
-	server();
+	//server();
+	//auto mv = chess::Move("D2", "D4");
+	//	board.makeMove(mv);
+	//	board.printBoard();
+	//	return 1;
+	
+
+
 
 	//while (true) {
 	//    auto kada = testiram();
@@ -89,13 +96,16 @@ int main()
 	//board.isPinned();
 	//std::cout << std::endl << board.isCheck()<< std::endl;
 	//auto moves = board.generatePieceMoves(chess::Position("E8"));
-	//auto moves = board.getAllLegalMoves();
-	auto t1 = high_resolution_clock::now();
+	auto moves = board.getAllLegalMoves();
 	//auto move = chess::Move("E2","E4",false,false,chess::PieceType::None);
 	//board.makeMove(move);
 	board.printBoard();
-  // int numPositions = moveGenerationTest(board, 5);
-	for (int i = 0; i < 15; i++) {
+	auto t1 = high_resolution_clock::now();
+   int numPositions = moveGenerationTest(board, 5);
+   std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
+	auto t2 = high_resolution_clock::now();
+
+	/*for (int i = 0; i < 15; i++) {
 		auto move = board.findBestMove(5);
 		std::cout << move.getMoveText() << std::endl;
 		board.makeMove(move);
@@ -105,9 +115,8 @@ int main()
 		if (board.isCheckMate()) {
 			break;
 		}
-	}
+	}*/
 	board.printBoard();
-	auto t2 = high_resolution_clock::now();
 	auto ms_int = duration_cast<milliseconds>(t2 - t1);
 
 	/* Getting number of milliseconds as a double. */
@@ -124,16 +133,16 @@ int main()
 	//
 	//auto moves = board.getAllLegalMoves();
 	// std::cout << moves.size() << std::endl;
-	// for (chess::Move move : moves) {
+	 //for (chess::Move move : moves) {
 
-	//     //board.makeMove(move);
-	//     board.makeMove(move);
-	//     auto tada = board.getAllLegalMoves();
-	//     std::cout << move.getMoveText() <<", "<< tada.size() << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
-	//     board.unmakeMove();
-	//   // board.unmakeMove();
+	 //    //board.makeMove(move);
+	 //    board.makeMove(move);
+	 //    auto tada = board.getAllLegalMoves();
+	 //    std::cout << move.getMoveText() <<", "<< tada.count << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
+	 //    board.unmakeMove();
+	 //  // board.unmakeMove();
 
-	// }
+	 //}
 
 	// std::cout << moves.size() << std::endl;
 	 //auto move = moves.front();

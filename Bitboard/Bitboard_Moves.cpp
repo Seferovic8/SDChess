@@ -63,6 +63,7 @@ namespace chess {
 	}
 	IndexSet Bitboard::getAllBishopMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
+
 		return getBitList(bishopAttacksWithBlockers(sq, allPieces) & ~myPieces);
 	}
 	IndexSet Bitboard::getAllRookMoves(int sq, chess::Color color) {

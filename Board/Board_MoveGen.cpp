@@ -6,6 +6,7 @@ namespace chess {
 		Color pieceColor = piece.getColor();
 		MoveList moves;
 		auto dirs = piece.directions();
+		//if (piece.isSliding()) {
 		for (chess::Position direction : dirs) {
 			if (piece.isSliding()) {
 				int row = fromPos.row;
@@ -44,6 +45,7 @@ namespace chess {
 
 			}
 		}
+
 		if (!this->isCheck()) {
 
 			if (piece.getPieceType() == PieceType::King) {
