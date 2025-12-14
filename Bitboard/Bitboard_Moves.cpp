@@ -1,4 +1,4 @@
-#include "Bitboard.h"
+﻿#include "Bitboard.h"
 
 namespace chess {
 
@@ -57,18 +57,61 @@ namespace chess {
 
 		return attacks;
 	}
+	uint64_t Bitboard::getRook(int sq, chess::Color color) {
+			uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
+
+			uint64_t occ = allPieces & rookMask[sq];
+			uint64_t index = (occ * rookMagic[sq]) >> rookShift[sq];
+
+			//// 3️⃣ Lookup attacks
+			//sq = chess::Position::flipPosition(sq);
+			uint64_t attacks = rookAttacks[sq][index];
+
+			//// 4️⃣ Remove friendly squares
+			attacks &= ~myPieces;
+			//if (attacks != (rookAttacksWithBlockers(sq, allPieces) & ~myPieces)) {
+			//pBitboard(allPieces);
+			//pBitboard(rookRays[sq]);
+			//pBitboard(rookAttacksWithBlockers(sq, allPieces) & ~myPieces);
+			//pBitboard(attacks);
+			//std::cout << sq;
+			//}
+			return attacks;
+			//return rookAttacksWithBlockers(sq, allPieces) & ~myPieces;
+		
+	}
+	uint64_t Bitboard::getBishop(int sq, chess::Color color) {
+		uint64_t myPieces =
+			(color == chess::Color::White) ? whitePieces : blackPieces;
+
+		// 1️⃣ Relevant occupancy (only diagonal rays)
+		uint64_t occ = allPieces & bishopMask[sq];
+
+		// 2️⃣ Magic index
+		uint64_t index = (occ * bishopMagic[sq]) >> bishopShift[sq];
+
+		// 3️⃣ Lookup attacks
+		uint64_t attacks = bishopAttacks[sq][index];
+
+		// 4️⃣ Remove friendly pieces
+		attacks &= ~myPieces;
+
+		return attacks;
+	}
+
 	IndexSet Bitboard::getAllQueenMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
-		return getBitList((rookAttacksWithBlockers(sq, allPieces) | bishopAttacksWithBlockers(sq, allPieces)) & ~myPieces);
+		return getBitList((getRook(sq, color) | getBishop(sq, color)));
 	}
 	IndexSet Bitboard::getAllBishopMoves(int sq, chess::Color color) {
-		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
+		//uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 
-		return getBitList(bishopAttacksWithBlockers(sq, allPieces) & ~myPieces);
+		return getBitList(getBishop(sq, color));
 	}
 	IndexSet Bitboard::getAllRookMoves(int sq, chess::Color color) {
-		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
-		return getBitList(rookAttacksWithBlockers(sq, allPieces) & ~myPieces);
+
+		return getBitList(getRook(sq,color));
+		//return getBitList(rookAttacksWithBlockers(sq, allPieces) & ~myPieces);
 	}
 	IndexSet Bitboard::getAllKnightMoves(int sq, chess::Color color) {
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;

@@ -128,6 +128,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bitboard\Bitboard.cpp" />
+    <ClCompile Include="Bitboard\bitboard_Magic.cpp" />
+    <ClCompile Include="Bitboard\Bitboard_MakeMove.cpp" />
     <ClCompile Include="Bitboard\Bitboard_Moves.cpp" />
     <ClCompile Include="Bitboard\Bitboard_Safety.cpp" />
     <ClCompile Include="Board\Board.cpp" />

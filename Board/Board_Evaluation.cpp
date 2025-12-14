@@ -5,11 +5,11 @@ namespace chess {
 		int whiteMaterial = getMaterialScore(Color::White);
 		int blackMaterial = getMaterialScore(Color::Black);
 
-		int whitePieceSquare = getMaterialScore(Color::White);
-		int blackPieceSquare = getMaterialScore(Color::Black);
+		//int whitePieceSquare = getPositionScore(Color::White);
+		//int blackPieceSquare = getPositionScore(Color::Black);
 
-		int score = (whiteMaterial - blackMaterial) +
-			(whitePieceSquare - blackPieceSquare);
+		int score = (whiteMaterial - blackMaterial);// +
+		//	(whitePieceSquare - blackPieceSquare);
 		return score;
 	}
 	int Board::getMaterialScore(Color color) {
@@ -22,8 +22,8 @@ namespace chess {
 	int Board::getMobilityScore(Color color) {
 		int score = 0;
 		for (int i = 1; i < 6; i++) {
-			for (int position : bitboard.material[static_cast<int>(color)][i].numbers) {
-				MoveList moves = generatePieceMoves(chess::Position(position));
+			for (int position : bitboard.material[static_cast<int>(color)][i]) {
+				//MoveList moves = generatePieceMoves(chess::Position(position));
 				score += 0;
 			}
 		}
@@ -32,11 +32,12 @@ namespace chess {
 	int Board::getPositionScore(Color color) {
 		int score = 0;
 		for (int i = 1; i < 6; i++) {
-			for (int position : bitboard.material[static_cast<int>(color)][i].numbers) {
+			for (int position : bitboard.material[static_cast<int>(color)][i]) {
 				if (color == Color::Black) {
 					position = chess::Position::flipPosition(position);
 				}
-				score += weights.PieceSquareTables[i][position];
+				score += weights.PieceSquareTables[i][position]; 
+				auto ba = bitboard.material[static_cast<int>(color)][i]; 
 			}
 		}
 		return score;

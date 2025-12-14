@@ -54,17 +54,27 @@ namespace chess {
 
 		uint64_t whitePieces = 0LL;
 		uint64_t blackPieces = 0LL;
-		
 		uint64_t allPieces = 0LL;
 
 
-		uint64_t knightMoves[64];
-		uint64_t bishopRays[64];
-		uint64_t rookRays[64];
-		uint64_t pawnAttacksWhite[64];
-		uint64_t pawnAttacksBlack[64];
-		uint64_t kingMoves[64];
-		int direction[64][64];
+
+		static uint64_t knightMoves[64];
+		static uint64_t bishopRays[64];
+		static uint64_t rookRays[64];
+
+		static uint64_t bishopMask[64];
+		static uint64_t rookMask[64];
+		static uint64_t rookAttacks[64][4096];
+		static uint64_t bishopAttacks[64][4096];
+
+		static uint64_t pawnAttacksWhite[64];
+		static uint64_t pawnAttacksBlack[64];
+		static uint64_t kingMoves[64];
+		static int direction[64][64];
+		static const uint64_t bishopMagic[64];
+		static const uint64_t rookMagic[64];
+		static const int rookShift[64];
+		static const int bishopShift[64];
 
 		chess::Color sideToMove;
 		static const uint64_t FILE_A = 0x0101010101010101ULL;
@@ -78,17 +88,11 @@ namespace chess {
 		void initBishopRays();
 		void initAttackTables();
 		void initDirectionTable();
-		static inline int lsb(uint64_t bb) {
-			#ifdef _MSC_VER
-						unsigned long index;
-						_BitScanForward64(&index, bb);
-						return (int)index;
-			#else
-						return __builtin_ctzll(bb);
-			#endif
-		}
+
 
 		// Bitboard_moves.cpp
+		uint64_t getRook(int sq, chess::Color color);
+		uint64_t getBishop(int sq, chess::Color color);
 		uint64_t rookAttacksWithBlockers(int sq, uint64_t occ);
 		uint64_t bishopAttacksWithBlockers(int sq, uint64_t occ);
 
@@ -97,6 +101,15 @@ namespace chess {
 
 
 	public:
+		static inline int lsb(uint64_t bb) {
+#ifdef _MSC_VER
+			unsigned long index;
+			_BitScanForward64(&index, bb);
+			return (int)index;
+#else
+			return __builtin_ctzll(bb);
+#endif
+		}
 		IndexSet material[2][6];
 		IndexSet getBitList(uint64_t bb);
 		Bitboard(); // default constructor
@@ -105,6 +118,7 @@ namespace chess {
 		void printBitboard() const;
 		int getKingIndex(Color color)const;
 		int getIndex(uint64_t bb) const;
+		uint64_t getMyPieceBitboard(Color color) const;
 
 
 		// Bitboard_moves.cpp

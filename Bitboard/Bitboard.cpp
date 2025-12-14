@@ -9,6 +9,17 @@
 #endif
 
 namespace chess {
+	uint64_t Bitboard::knightMoves[64];
+	uint64_t Bitboard::bishopRays[64];
+	uint64_t Bitboard::rookRays[64];
+	uint64_t Bitboard::pawnAttacksWhite[64];
+	uint64_t Bitboard::pawnAttacksBlack[64];
+	uint64_t Bitboard::kingMoves[64];
+	uint64_t Bitboard::rookMask[64];
+	uint64_t Bitboard::bishopMask[64];
+	uint64_t Bitboard::rookAttacks[64][4096];
+	uint64_t Bitboard::bishopAttacks[64][4096];
+	int Bitboard::direction[64][64];
 	Bitboard::Bitboard() {
 		initAttackTables();
 	}
@@ -171,6 +182,12 @@ namespace chess {
 				((bb & ~FILE_H) >> 7) | ((bb & ~FILE_A) >> 9);
 		}
 	}
+	uint64_t Bitboard::getMyPieceBitboard(Color color) const {
+		if (color == Color::White) {
+			return whitePieces;
+		}
+		return blackPieces;
+	}
 	void Bitboard::initRookRays() {
 		for (int sq = 0; sq < 64; sq++) {
 			int r = sq / 8, c = sq % 8;
@@ -182,6 +199,40 @@ namespace chess {
 			for (int cc = c - 1; cc >= 0; cc--) mask |= 1ULL << (r * 8 + cc);
 
 			rookRays[sq] = mask;
+		}
+		for (int sq = 0; sq < 64; sq++) {
+			int r = sq / 8, c = sq % 8;
+			uint64_t mask = 0ULL;
+
+			for (int rr = r + 1; rr < 7; rr++) mask |= 1ULL << (rr * 8 + c);
+			for (int rr = r - 1; rr >= 1; rr--) mask |= 1ULL << (rr * 8 + c);
+			for (int cc = c + 1; cc < 7; cc++) mask |= 1ULL << (r * 8 + cc);
+			for (int cc = c - 1; cc >= 1; cc--) mask |= 1ULL << (r * 8 + cc);
+
+			rookMask[sq] = mask;
+		}
+
+		for (int sq = 0; sq < 64; sq++) {
+
+			uint64_t mask = rookMask[sq];
+			int relevantBits = lsb(mask);
+			int tableSize = 1 << relevantBits;
+
+			// Clear table (optional but safe)
+			for (int i = 0; i < 4096; i++)
+				rookAttacks[sq][i] = 0ULL;
+
+			uint64_t blockers = 0ULL;
+			do {
+				uint64_t attacks = rookAttacksWithBlockers(sq, blockers);
+
+				uint64_t index =
+					(blockers * rookMagic[sq]) >> (rookShift[sq]);
+
+				rookAttacks[sq][index] = attacks;
+
+				blockers = (blockers - mask) & mask;
+			} while (blockers);
 		}
 	}
 	void Bitboard::initBishopRays() {
@@ -195,6 +246,39 @@ namespace chess {
 			for (int rr = r - 1, cc = c - 1; rr >= 0 && cc >= 0; rr--, cc--) mask |= 1ULL << (rr * 8 + cc);
 
 			bishopRays[sq] = mask;
+		}
+		for (int sq = 0; sq < 64; sq++) {
+			int r = sq / 8, c = sq % 8;
+			uint64_t mask = 0ULL;
+
+			for (int rr = r + 1, cc = c + 1; rr < 7 && cc < 7; rr++, cc++) mask |= 1ULL << (rr * 8 + cc);
+			for (int rr = r + 1, cc = c - 1; rr < 7 && cc >= 1; rr++, cc--) mask |= 1ULL << (rr * 8 + cc);
+			for (int rr = r - 1, cc = c + 1; rr >= 1 && cc < 7; rr--, cc++) mask |= 1ULL << (rr * 8 + cc);
+			for (int rr = r - 1, cc = c - 1; rr >= 1 && cc >= 1; rr--, cc--) mask |= 1ULL << (rr * 8 + cc);
+
+			bishopMask[sq] = mask;
+		}
+		for (int sq = 0; sq < 64; sq++) {
+
+			uint64_t mask = bishopMask[sq];
+			int relevantBits = lsb(mask);
+			int tableSize = 1 << relevantBits;
+
+			// Clear table (optional but safe)
+			for (int i = 0; i < 4096; i++)
+				bishopAttacks[sq][i] = 0ULL;
+
+			uint64_t blockers = 0ULL;
+			do {
+				uint64_t attacks = bishopAttacksWithBlockers(sq, blockers);
+
+				uint64_t index =
+					(blockers * bishopMagic[sq]) >> bishopShift[sq];
+
+				bishopAttacks[sq][index] = attacks;
+
+				blockers = (blockers - mask) & mask;
+			} while (blockers);
 		}
 	}
 	void Bitboard::initKingMoves() {

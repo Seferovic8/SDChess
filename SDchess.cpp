@@ -72,6 +72,7 @@ int main()
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
 	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	auto board = chess::Board(fen);
+	std::cout << board.evaluate();
 	//server();
 	//auto mv = chess::Move("D2", "D4");
 	//	board.makeMove(mv);
@@ -85,7 +86,6 @@ int main()
 	//    auto kada = testiram();
 	//  //  std::cout << kada.first<<std::endl;
 	//    auto board = chess::Board(kada.first);
-	//    int numPositions = moveGenerationTest(board, 1);
 	//    if (kada.second != numPositions) {
 	//        std::cout << kada.first << ", numOfMoves: " <<numPositions <<std::endl;
 	//        return 0;
@@ -94,15 +94,16 @@ int main()
 
 	//board.printBoard();
 	//board.isPinned();
-	//std::cout << std::endl << board.isCheck()<< std::endl;
 	//auto moves = board.generatePieceMoves(chess::Position("E8"));
 	auto moves = board.getAllLegalMoves();
 	//auto move = chess::Move("E2","E4",false,false,chess::PieceType::None);
 	//board.makeMove(move);
 	board.printBoard();
 	auto t1 = high_resolution_clock::now();
-   int numPositions = moveGenerationTest(board, 5);
-   std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
+	    int numPositions = moveGenerationTest(board, 5);
+	std::cout << numPositions << std::endl;
+   //int numPositions = moveGenerationTest(board, 5);
+   //std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
 	auto t2 = high_resolution_clock::now();
 
 	/*for (int i = 0; i < 15; i++) {

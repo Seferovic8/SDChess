@@ -10,13 +10,13 @@
 
 namespace chess {
 	Square::Square()
-		: _row(0), _column(0), _piece(Piece(chess::Color::White,chess::PieceType::None)),_index("A1")
+		: _row(0), _column(0), _piece(Piece(chess::Color::White,chess::PieceType::None))
 	{}
 
 	Square::Square(int r, int c, Piece piece):_row(r),_column(c), _piece(piece) {
-		_index = nameColumns[c] + std::to_string(r);
+		//_index = nameColumns[c] + std::to_string(r);
 	}
-	Square::Square(std::string squareIndex, Piece piece) :_piece(piece),_index(squareIndex) {
+	Square::Square(std::string squareIndex, Piece piece) :_piece(piece) {
 		chess::Position position = chess::Position::indexToPos(squareIndex);
 		_row = position.row;
 		_column = position.column;

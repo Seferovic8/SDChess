@@ -57,7 +57,7 @@ namespace chess {
 		void unmakeMove();
 
 		//Board_MoveGen.cpp
-		MoveList generatePieceMoves(chess::Position fromPos);
+		void generatePieceMoves(chess::Position fromPos, MoveList& moves);
 		MoveList getAllPseudoLegalMoves();
 		MoveList getAllLegalMoves();
 		void rookCastling(chess::Position pos, Color pieceColor);

@@ -27,29 +27,7 @@ namespace chess {
 		if (_pieceType == chess::PieceType::Bishop || _pieceType == chess::PieceType::Rook || _pieceType == chess::PieceType::Queen) return true;
 		return false;
 	}
-	std::vector<chess::Position> Piece::directions() const {
-		switch (_pieceType) {
-		case chess::PieceType::Knight:
-			return KNIGHT_DIRS; // Returns a reference (Instant, 0 allocation)
 
-		case chess::PieceType::Bishop:
-			return BISHOP_DIRS;
-
-		case chess::PieceType::Rook:
-			return ROOK_DIRS;
-
-		case chess::PieceType::Queen:
-			return QUEEN_DIRS;
-
-		case chess::PieceType::King:
-			return KING_DIRS;
-
-		case chess::PieceType::Pawn:
-		case chess::PieceType::None:
-		default:
-			return NO_DIRS;
-		}
-	};
 
 
 	char getPieceChar(chess::PieceType pieceType) {

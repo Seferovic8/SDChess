@@ -1,49 +1,33 @@
 ﻿#include "Board.h"
 
 namespace chess {
-	MoveList Board::generatePieceMoves(chess::Position fromPos) {
+	void Board::generatePieceMoves(chess::Position fromPos,MoveList& moves) {
 		Piece piece = board[fromPos.row][fromPos.column].getPiece();
 		Color pieceColor = piece.getColor();
-		MoveList moves;
-		auto dirs = piece.directions();
 		//if (piece.isSliding()) {
-		for (chess::Position direction : dirs) {
-			if (piece.isSliding()) {
-				int row = fromPos.row;
-				int col = fromPos.column;
-				row += direction.row;
-				col += direction.column;
-				while (isInside(row, col)) {
-					if (board[row][col].hasPiece()) {
-						if (piece.getColor() != board[row][col].getPiece().getColor()) {
-							moves.push_back(Move(fromPos.row, fromPos.column, row, col));
-						}
-						break;
-					}
-					else {
+		IndexSet pieceMoves;
+		switch (piece.getPieceType()) {
+		case chess::PieceType::Queen:
+			pieceMoves = bitboard.getAllQueenMoves(fromPos.getNumberIndex(), pieceColor);
+			break;
+		case chess::PieceType::Bishop:
+			pieceMoves = bitboard.getAllBishopMoves(fromPos.getNumberIndex(), pieceColor);
+			break;
+		case chess::PieceType::Rook:
+			pieceMoves = bitboard.getAllRookMoves(fromPos.getNumberIndex(), pieceColor);
+			break;
+		case chess::PieceType::Knight:
+			pieceMoves = bitboard.getAllKnightMoves(fromPos.getNumberIndex(), pieceColor);
+			break;
+		case chess::PieceType::King:
+			pieceMoves = bitboard.getAllKingMoves(fromPos.getNumberIndex(), pieceColor);
+			break;
 
-						moves.push_back(Move(fromPos.row, fromPos.column, row, col));
-					}
-					row += direction.row;
-					col += direction.column;
+		}
+		for (auto mv : pieceMoves) {
+			auto toPos = chess::Position(mv);
+			moves.push_back(Move(fromPos.row, fromPos.column, toPos.row, toPos.column));
 
-				}
-			}
-			else {
-				int row = fromPos.row + direction.row;
-				int col = fromPos.column + direction.column;
-				if (isInside(row, col)) {
-					if (board[row][col].hasPiece()) {
-						if (piece.getColor() != board[row][col].getPiece().getColor()) {
-							moves.push_back(Move(fromPos.row, fromPos.column, row, col));
-						}
-					}
-					else {
-						moves.push_back(Move(fromPos.row, fromPos.column, row, col));
-					}
-				}
-
-			}
 		}
 
 		if (!this->isCheck()) {
@@ -154,21 +138,25 @@ namespace chess {
 			}
 		}
 
-		return moves;
+		//return moves;
 	}
 	MoveList Board::getAllPseudoLegalMoves() {
 		MoveList allMoves;
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				if (!board[i][j].hasPiece()) continue;
-				auto pieceColor = board[i][j].getPiece().getColor();
-				if (pieceColor == sideToMove) {
-					auto pieceMoves = generatePieceMoves(chess::Position(i, j));
-					allMoves.insert(allMoves.end(), pieceMoves.begin(), pieceMoves.end());
-				}
-			}
+		uint64_t pieces = bitboard.getMyPieceBitboard(sideToMove);
+
+		// 2. Loop until the bitboard is empty
+		while (pieces) {
+			// Get the index of the first piece (0-63)
+			int sq = Bitboard::lsb(pieces);
+			auto pos = chess::Position(sq);
+
+			generatePieceMoves(pos, allMoves);
+
+			pieces &= (pieces - 1);
 
 		}
+
+		
 		return allMoves;
 	}
 	MoveList Board::getAllLegalMoves() {
@@ -182,7 +170,8 @@ namespace chess {
 		if (this->isCheck()) {
 			int numAttackers = bitboard.getBitList(attackers).size();
 			if (numAttackers >= 2) {
-				pseudoMoves = generatePieceMoves(chess::Position::numToPosition(kingIndex));
+				pseudoMoves = MoveList();
+				generatePieceMoves(chess::Position::numToPosition(kingIndex), pseudoMoves);
 			}
 		}
 		auto pinned = bitboard.getPinnedPieces();

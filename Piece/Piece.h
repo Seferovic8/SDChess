@@ -4,12 +4,6 @@
 #include<vector>
 #include "../Position/Position.h";
 namespace chess {
-	const std::vector<chess::Position> KNIGHT_DIRS = { {2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2}, {1,-2}, {-1,2}, {-1,-2} };
-	const std::vector<chess::Position> BISHOP_DIRS = { {1,1}, {1,-1}, {-1,1}, {-1,-1} };
-	const std::vector<chess::Position> ROOK_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1} };
-	const std::vector<chess::Position> QUEEN_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1} };
-	const std::vector<chess::Position> KING_DIRS = { {1,0}, {-1,0}, {0,1}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1} };
-	const std::vector<chess::Position> NO_DIRS = {};
 	enum class Color { White=0, Black=1 };
 	inline Color operator!(Color c) {
 		return (c == Color::White) ? Color::Black : Color::White;
@@ -19,7 +13,10 @@ namespace chess {
 	Piece createPieceFromChar(char c);
 	char getPieceChar(PieceType pieceType);
 	Piece createPiece(chess::PieceType pieceType, chess::Color color);
-
+	static char pieceTypeToChar(PieceType pt) {
+		static const char pieces[] = "PNBRQK."; // Maps indices 0-6 to chars
+		return pieces[static_cast<int>(pt)];
+	}
 	class Piece {
 	protected:
 		char _label;
@@ -30,7 +27,7 @@ namespace chess {
 		bool isSliding() const;
 		PieceType getPieceType() const;
 
-		std::vector<chess::Position> directions() const;
+		//std::vector<chess::Position> directions() const;
 		Color getColor();
 		char getLabel() const;
 		Piece(Color color,PieceType pieceType);

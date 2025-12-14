@@ -24,7 +24,11 @@ namespace chess {
 
 	}
 	std::string Move::getMoveText() const {
-		return Position::squareToString(_from) + " -> " + Position::squareToString(_to);
+		std::string promotion = "";
+		if (_promotionPiece != chess::PieceType::None) {
+			promotion += chess::pieceTypeToChar(_promotionPiece);
+		}
+		return Position::squareToString(_from) + " -> " + Position::squareToString(_to)+promotion;
 	}
 	chess::Position Move::getFromPos()const {
 		return _from;

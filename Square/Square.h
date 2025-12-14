@@ -9,7 +9,7 @@ namespace chess {
 	class Square {
 	private: 
 		int _row, _column;
-		std::string _index;
+		//std::string _index;
 		Piece _piece;
 	public:
 		Square(); // default constructor
