@@ -8,7 +8,7 @@
 #include "../Move/Move.h"
 #include <vector>
 namespace chess {
-	using VectorBoard = std::vector<std::vector<Square>>;
+	using VectorBoard = Square[8][8];
 	struct CastlingRights {
 		bool whiteKing = true; // K
 		bool whiteQueen = true; // Q
@@ -55,11 +55,14 @@ namespace chess {
 		bool isInside(int r, int c);
 		void makeMove(chess::Move);
 		void unmakeMove();
-
+		Move findBestMove(int depth);
+		int minimax_alpha_beta(int depth, int alpha, int beta);
+		int quiescence_search(int alpha, int beta);
 		//Board_MoveGen.cpp
 		void generatePieceMoves(chess::Position fromPos, MoveList& moves);
 		MoveList getAllPseudoLegalMoves();
 		MoveList getAllLegalMoves();
+		MoveList getAllLegalCaptures();
 		void rookCastling(chess::Position pos, Color pieceColor);
 		bool isCheck();
 		bool isCheckMate();
@@ -69,8 +72,6 @@ namespace chess {
 		int getMaterialScore(Color color);
 		int getMobilityScore(Color color);
 		int getPositionScore(Color color);
-		Move findBestMove(int depth);
-		int minimax_alpha_beta(int depth, int alpha, int beta);
 
 	};
 }

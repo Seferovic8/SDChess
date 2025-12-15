@@ -1,7 +1,7 @@
 ﻿#include "Board.h"
 
 namespace chess {
-	void Board::generatePieceMoves(chess::Position fromPos,MoveList& moves) {
+	void Board::generatePieceMoves(chess::Position fromPos, MoveList& moves) {
 		Piece piece = board[fromPos.row][fromPos.column].getPiece();
 		Color pieceColor = piece.getColor();
 		//if (piece.isSliding()) {
@@ -144,7 +144,6 @@ namespace chess {
 		MoveList allMoves;
 		uint64_t pieces = bitboard.getMyPieceBitboard(sideToMove);
 
-		// 2. Loop until the bitboard is empty
 		while (pieces) {
 			// Get the index of the first piece (0-63)
 			int sq = Bitboard::lsb(pieces);
@@ -156,7 +155,7 @@ namespace chess {
 
 		}
 
-		
+
 		return allMoves;
 	}
 	MoveList Board::getAllLegalMoves() {
@@ -238,6 +237,17 @@ namespace chess {
 		}
 		return legalMoves;
 
+	}
+	MoveList Board::getAllLegalCaptures() {
+		MoveList allMoves = getAllLegalMoves();
+		MoveList captureMoves;
+		for (Move mv : allMoves) {
+			auto pos = mv.getToPos();
+			if (board[pos.row][pos.column].hasPiece()) {
+				captureMoves.push_back(mv);
+			}
+		}
+		return captureMoves;
 	}
 	void Board::rookCastling(chess::Position pos, Color pieceColor) {
 		if (pos.column == 0) {

@@ -10,9 +10,9 @@
 namespace chess {
 
 	Board::Board() {
-		board.resize(8);
+	//	board.resize(8);
 		for (int r = 0; r < 8; r++) {
-			board[r].resize(8);
+		//	board[r].resize(8);
 
 			for (int c = 0; c < 8; c++) {
 				if (r == 0 || r == 1 || r == 6 || r == 7) {
@@ -119,10 +119,10 @@ namespace chess {
 	Board::Board(std::string fen) {
 		//history.push_back(Move("B7", "B5"));
 
-		board.resize(8);
-		for (int r = 0; r < 8; r++) {
-			board[r].resize(8);
-		}
+	//	board.resize(8);
+		//for (int r = 0; r < 8; r++) {
+	//		board[r].resize(8);
+	//	}
 		int row = 0, col = 0;
 
 		int i = 0;
@@ -337,13 +337,14 @@ namespace chess {
 	int Board::minimax_alpha_beta(int depth, int alpha, int beta) {
 		if (depth == 0) {
 			return evaluate();
+			//return quiescence_search(alpha, beta);
 		}
 		MoveList moves = getAllLegalMoves();
 
 		if (moves.count == 0) {
 			if (isCheck()) {
 			//	printBoard();
-				return (sideToMove == Color::White) ? -INF : INF;
+				return (sideToMove == Color::White) ? (-INF - depth) : (INF + depth);
 			}
 			return 0;
 		}
@@ -373,13 +374,45 @@ namespace chess {
 		}
 	};
 
+	int Board::quiescence_search(int alpha, int beta) {
+		int stand_pat = evaluate();
+
+		if (stand_pat >= beta) {
+			return beta; 
+		}
+
+		if (stand_pat > alpha) {
+			alpha = stand_pat;
+		}
+
+		MoveList captures = getAllLegalCaptures();
+
+
+		for (const auto& mv : captures) {
+
+			makeMove(mv);
+			int score = -quiescence_search(-beta, -alpha);
+			unmakeMove();
+
+
+			if (score >= beta) {
+				return beta;
+			}
+			if (score > alpha) {
+				alpha = score; 
+			}
+		}
+
+		return alpha;
+	}
 	Move Board::findBestMove(int depth) {
 		int bestVal = (sideToMove == Color::White) ? -INF : INF;
 		Move bestMove;
-
+		int alpha = -INF;
+		int beta = INF;
 		for (auto mv : getAllLegalMoves()) {
 			makeMove(mv);
-			int moveVal = minimax_alpha_beta(depth, -INF, INF);
+			int moveVal = minimax_alpha_beta(depth, alpha, beta);
 			if (isCheckMate()) {
 				unmakeMove();
 
@@ -391,12 +424,14 @@ namespace chess {
 				if (moveVal > bestVal) {
 					bestMove = mv;
 					bestVal = moveVal;
+					alpha = std::max(alpha, bestVal);
 				}
 			}
 			else {
 				if (moveVal < bestVal) {
 					bestMove = mv;
 					bestVal = moveVal;
+					beta = std::min(beta, bestVal);
 				}
 			}
 

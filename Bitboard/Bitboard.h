@@ -33,7 +33,7 @@ namespace chess {
 		const int* begin() const { return &numbers[0]; }
 		const int* end()   const { return &numbers[n]; }
 	};
-	using VectorBoard = std::vector<std::vector<Square>>;
+	using VectorBoard = Square[8][8];
 
 
 	class Bitboard {

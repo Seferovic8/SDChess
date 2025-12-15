@@ -100,7 +100,7 @@ int main()
 	//board.makeMove(move);
 	board.printBoard();
 	auto t1 = high_resolution_clock::now();
-	    int numPositions = moveGenerationTest(board, 5);
+	    int numPositions = moveGenerationTest(board, 6);
 	std::cout << numPositions << std::endl;
    //int numPositions = moveGenerationTest(board, 5);
    //std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;

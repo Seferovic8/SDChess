@@ -7,6 +7,7 @@
 #include "httplib.h" // Make sure this file is in your project directory
 
 int server() {
+    int i = 0;
     // create server on port 8000
     httplib::Server svr;
 
@@ -45,9 +46,10 @@ int server() {
 
         std::cout <<  valFrom << std::endl;
 
-        std::cout << "mv.getMoveText()" << std::endl;
         chess::Board board = chess::Board(valFrom);
-        auto mv = board.findBestMove(4);
+        std::cout << board.evaluate() << std::endl;
+ 
+        auto mv = board.findBestMove(5);
         std::cout << mv.getMoveText() << std::endl;
         std::cout << "end" << std::endl;
 
