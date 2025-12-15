@@ -9,6 +9,39 @@
 #include "../Move/Move.h"
 #include<vector>
 namespace chess {
+	struct StateBitboard {
+		uint64_t whitePawns = 0LL;
+		uint64_t whiteQueens = 0LL;
+		uint64_t whiteKings = 0LL;
+		uint64_t whiteBishops = 0LL;
+		uint64_t whiteKnights = 0LL;
+		uint64_t whiteRooks = 0LL;
+
+		uint64_t blackPawns = 0LL;
+		uint64_t blackQueens = 0LL;
+		uint64_t blackKings = 0LL;
+		uint64_t blackBishops = 0LL;
+		uint64_t blackKnights = 0LL;
+		uint64_t blackRooks = 0LL;
+		StateBitboard(
+			uint64_t wP, uint64_t wQ, uint64_t wK, uint64_t wB, uint64_t wN, uint64_t wR,
+			uint64_t bP, uint64_t bQ, uint64_t bK, uint64_t bB, uint64_t bN, uint64_t bR
+		) :
+			whitePawns(wP),
+			whiteQueens(wQ),
+			whiteKings(wK),
+			whiteBishops(wB),
+			whiteKnights(wN),
+			whiteRooks(wR),
+
+			blackPawns(bP),
+			blackQueens(bQ),
+			blackKings(bK),
+			blackBishops(bB),
+			blackKnights(bN),
+			blackRooks(bR)
+		{}
+	};
 	struct IndexSet {
 		int numbers[64];
 		int n = 0;          
@@ -76,7 +109,6 @@ namespace chess {
 		static const int rookShift[64];
 		static const int bishopShift[64];
 
-		chess::Color sideToMove;
 		static const uint64_t FILE_A = 0x0101010101010101ULL;
 		static const uint64_t FILE_H = 0x8080808080808080ULL;
 		// Bitboard.cpp
@@ -101,6 +133,7 @@ namespace chess {
 
 
 	public:
+		chess::Color sideToMove;
 		static inline int lsb(uint64_t bb) {
 #ifdef _MSC_VER
 			unsigned long index;
@@ -118,7 +151,7 @@ namespace chess {
 		void printBitboard() const;
 		int getKingIndex(Color color)const;
 		int getIndex(uint64_t bb) const;
-		uint64_t getMyPieceBitboard(Color color) const;
+		uint64_t getMyPieceBitboard(Color color)const ;
 
 
 		// Bitboard_moves.cpp
@@ -140,5 +173,16 @@ namespace chess {
 		std::pair<IndexSet, std::array<uint64_t, 64>> getPinnedPieces();
 		bool canCastle(bool kingSide, chess::Position fromPos);
 		bool canEnPassant(Move move);
+
+		//Bitboard_MakeMove.cpp
+		StateBitboard getBitboardState();
+		void loadBitboardFromState(StateBitboard state,Color side);
+		void removeEnemyPiece(Color enemy, chess::Position pos);
+		void movePieceOnBitboard(int fromSq, int toSq, PieceType pt, Color side);
+		void handlePromotion(Color side, int toSq, PieceType promo);
+		void handleEnPassant(const Move& m, Color side);
+		void handleCastling(const Move& m, Color side);
+		void makeMove(const Move& m, PieceType pt, Color side, bool isCapture);
+		void updateOccupancy();
 	};
 }

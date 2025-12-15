@@ -35,8 +35,9 @@ namespace chess {
 		uint64_t enemyBishops = color == Color::Black ? whiteBishops : blackBishops;
 		uint64_t enemyQueens = color == Color::Black ? whiteQueens : blackQueens;
 
-
+		//std::cout << "AA";
 		int kingSquare = lsb(kingBB); // king square 
+		//pBitboard(kingBB);
 		return isAttacked(kingSquare, color, enemyPawns, enemyKnights, enemyKings, enemyRooks, enemyBishops, enemyQueens, allPieces);
 
 	}

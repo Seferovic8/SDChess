@@ -143,7 +143,7 @@ namespace chess {
 	MoveList Board::getAllPseudoLegalMoves() {
 		MoveList allMoves;
 		uint64_t pieces = bitboard.getMyPieceBitboard(sideToMove);
-
+		auto k = sideToMove;
 		while (pieces) {
 			// Get the index of the first piece (0-63)
 			int sq = Bitboard::lsb(pieces);
@@ -160,12 +160,15 @@ namespace chess {
 	}
 	MoveList Board::getAllLegalMoves() {
 		MoveList legalMoves;
-		bitboard.loadBitboard(board, sideToMove);
+		//bitboard.loadBitboard(board, sideToMove);
 		uint64_t controled = bitboard.controledSquares(!sideToMove);
 		int kingIndex = bitboard.getKingIndex(sideToMove);
 
 		uint64_t attackers = bitboard.attackersToKing(sideToMove);
 		MoveList pseudoMoves = getAllPseudoLegalMoves();
+		//if (this->isCheckMate()) {
+		//	return legalMoves;
+		//}
 		if (this->isCheck()) {
 			int numAttackers = bitboard.getBitList(attackers).size();
 			if (numAttackers >= 2) {
@@ -183,6 +186,7 @@ namespace chess {
 			int fromPosNum = chess::Position::positionToNum(fromPos);
 			int toPosNum = chess::Position::positionToNum(toPos);
 			auto k = sideToMove;
+
 			if (this->isCheck()) {
 				std::pair<uint64_t, uint64_t> mask = bitboard.getCheckMask(kingIndex, sideToMove, attackers);
 				uint64_t checkMask = mask.first;

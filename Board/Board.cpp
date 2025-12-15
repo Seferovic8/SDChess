@@ -225,7 +225,8 @@ namespace chess {
 
 			}
 			castling.castlingFinished();
-			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, false, true);
+			GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling, false, false, false, true);
+			bitboard.handleCastling(move, pieceColor);
 			history.push_back(gameState);
 			return;
 		}
@@ -233,7 +234,8 @@ namespace chess {
 			board[fromPos.row][toPos.column].removePiece();
 			board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
 
-			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, true, false, false, pieceType);
+			GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling, true, true, false, false, pieceType);
+			bitboard.handleEnPassant(move, pieceColor);
 			history.push_back(gameState);
 			return;
 
@@ -258,11 +260,13 @@ namespace chess {
 
 					rookCastling(toPos, !pieceColor);
 				}
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, false, false, capturedPieceType);
+				GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling, true, false, false, false, capturedPieceType);
+				bitboard.makeMove(move, pieceType, pieceColor, true);
 				history.push_back(gameState);
 			}
 			else {
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling);
+				GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling);
+				bitboard.makeMove(move, pieceType, pieceColor, false);
 				history.push_back(gameState);
 			}
 			board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));
@@ -275,11 +279,13 @@ namespace chess {
 
 					rookCastling(toPos, !pieceColor);
 				}
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, true, false, capturedPieceType);
+				GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling, true, false, true, false, capturedPieceType);
+				bitboard.makeMove(move, pieceType, pieceColor, true);
 				history.push_back(gameState);
 			}
 			else {
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, true, false);
+				GameState gameState = GameState(move, pieceType, bitboard.getBitboardState(), !sideToMove, previousCastling, false, false, true, false);
+				bitboard.makeMove(move, pieceType, pieceColor, false);
 				history.push_back(gameState);
 			}
 			board[toPos.row][toPos.column].addPiece(chess::createPiece(move.getPromotionPiece(), pieceColor));
@@ -292,6 +298,8 @@ namespace chess {
 		history.pop_back();
 		sideToMove = !sideToMove;
 		castling = lastState.previousCastlingRights;
+		bitboard.loadBitboardFromState(lastState.previousBitboard,sideToMove);
+
 		chess::Position fromPos = lastState.move.getFromPos();
 		chess::Position toPos = lastState.move.getToPos();
 		board[toPos.row][toPos.column].removePiece();

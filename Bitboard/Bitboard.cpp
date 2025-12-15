@@ -182,7 +182,8 @@ namespace chess {
 				((bb & ~FILE_H) >> 7) | ((bb & ~FILE_A) >> 9);
 		}
 	}
-	uint64_t Bitboard::getMyPieceBitboard(Color color) const {
+	uint64_t Bitboard::getMyPieceBitboard(Color color)  const{
+		//pBitboard(blackPieces);
 		if (color == Color::White) {
 			return whitePieces;
 		}

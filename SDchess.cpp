@@ -40,6 +40,8 @@ int perft_recursive(chess::Board& board, int depth) {
 		board.makeMove(move);
 		numPositions += perft_recursive(board, depth - 1);
 		board.unmakeMove();
+		//std::cout << move.getMoveText() << ": " << numPositions << std::endl;
+
 	}
 
 	return numPositions;
@@ -48,12 +50,15 @@ int moveGenerationTest(chess::Board& board, int depth) {
 	int totalNodes = 0;
 	auto moves = board.getAllLegalMoves();
 	for (chess::Move move : moves) {
+
 		board.makeMove(move);
 		int numPositions = perft_recursive(board, depth - 1);
 		board.unmakeMove();
 
 
+		//std::cout << std::endl;
 		std::cout << move.getMoveText() << ": " << numPositions << std::endl;
+		//std::cout << std::endl << std::endl << std::endl;
 		totalNodes += numPositions;
 	}
 
@@ -67,12 +72,13 @@ int main()
 	using std::chrono::duration_cast;
 	using std::chrono::duration;
 	using std::chrono::milliseconds;
-	//std::string fen = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
+	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
-	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	//std::string fen = "3k4/8/8/8/8/8/8/3K3R w - - 1 1";
+
 	auto board = chess::Board(fen);
-	std::cout << board.evaluate();
+	//std::cout << board.evaluate();
 	//server();
 	//auto mv = chess::Move("D2", "D4");
 	//	board.makeMove(mv);
@@ -95,9 +101,15 @@ int main()
 	//board.printBoard();
 	//board.isPinned();
 	//auto moves = board.generatePieceMoves(chess::Position("E8"));
-	auto moves = board.getAllLegalMoves();
-	//auto move = chess::Move("E2","E4",false,false,chess::PieceType::None);
+		//auto move = chess::Move("D1","D2",false,false,chess::PieceType::None);
 	//board.makeMove(move);
+	/*move = chess::Move("D8", "E8", false, false, chess::PieceType::None);
+	board.makeMove(move);*/
+	//board.unmakeMove();
+	//move = chess::Move("E1", "G1", false, true, chess::PieceType::None);
+	//board.makeMove(move);
+	//board.unmakeMove();
+	auto moves = board.getAllLegalMoves();
 	board.printBoard();
 	auto t1 = high_resolution_clock::now();
 	    int numPositions = moveGenerationTest(board, 6);
