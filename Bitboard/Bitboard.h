@@ -111,8 +111,11 @@ namespace chess {
 
 		static const uint64_t FILE_A = 0x0101010101010101ULL;
 		static const uint64_t FILE_H = 0x8080808080808080ULL;
+		chess::Color sideToMove;
 		// Bitboard.cpp
 		void pBitboard(uint64_t allPieces);
+
+		// Bitboard_init.cpp
 		void initKnightMoves();
 		void initKingMoves();
 		void initPawnAttacks();
@@ -120,20 +123,19 @@ namespace chess {
 		void initBishopRays();
 		void initAttackTables();
 		void initDirectionTable();
+		uint64_t initRookAttacksWithBlockers(int sq, uint64_t occ);
+		uint64_t initBishopAttacksWithBlockers(int sq, uint64_t occ);
 
 
 		// Bitboard_moves.cpp
-		uint64_t getRook(int sq, chess::Color color);
-		uint64_t getBishop(int sq, chess::Color color);
-		uint64_t rookAttacksWithBlockers(int sq, uint64_t occ);
-		uint64_t bishopAttacksWithBlockers(int sq, uint64_t occ);
+		uint64_t getRookAttacks(int sq, uint64_t occ, uint64_t myPieces = 0ULL);
+		uint64_t getBishopAttacks(int sq, uint64_t occ,uint64_t myPieces = 0ULL);
 
 		// Bitboard_safety.cpp
 		bool isAttacked(int square, Color color, uint64_t enemyPawns, uint64_t enemyKnights, uint64_t enemyKings, uint64_t enemyRooks, uint64_t enemyBisops, uint64_t enemyQueens, uint64_t allMyPieces);
 
 
 	public:
-		chess::Color sideToMove;
 		static inline int lsb(uint64_t bb) {
 #ifdef _MSC_VER
 			unsigned long index;
@@ -155,11 +157,11 @@ namespace chess {
 
 
 		// Bitboard_moves.cpp
-		IndexSet getAllQueenMoves(int sq, chess::Color color);
-		IndexSet getAllRookMoves(int sq, chess::Color color);
-		IndexSet getAllBishopMoves(int sq, chess::Color color);
-		IndexSet getAllKingMoves(int sq, chess::Color color);
-		IndexSet getAllKnightMoves(int sq, chess::Color color);
+		uint64_t getAllQueenMoves(int sq, chess::Color color);
+		uint64_t getAllRookMoves(int sq, chess::Color color);
+		uint64_t getAllBishopMoves(int sq, chess::Color color);
+		uint64_t getAllKingMoves(int sq, chess::Color color);
+		uint64_t getAllKnightMoves(int sq, chess::Color color);
 		uint64_t rayBetween(int kingSq, int attackerSq);
 		MoveList generateKingMovesOnly(Color side);
 
@@ -184,5 +186,45 @@ namespace chess {
 		void handleCastling(const Move& m, Color side);
 		void makeMove(const Move& m, PieceType pt, Color side, bool isCapture);
 		void updateOccupancy();
+		void unmakeMove(const Move& m, PieceType movedPiece, PieceType capturedPiece, Color sideThatMoved);
+		inline bool hasPiece(int sq) const {
+			return (allPieces) & (1ULL << sq);
+		}
+
+		inline bool hasPiece(chess::Position pos) const {
+			return hasPiece(pos.getNumberIndex());
+		}
+		inline PieceType getPieceType(int sq) const {
+			uint64_t mask = 1ULL << sq;
+
+			// Check combined bitboards for each piece type
+			if ((whitePawns | blackPawns) & mask)     return PieceType::Pawn;
+			if ((whiteKnights | blackKnights) & mask) return PieceType::Knight;
+			if ((whiteBishops | blackBishops) & mask) return PieceType::Bishop;
+			if ((whiteRooks | blackRooks) & mask)     return PieceType::Rook;
+			if ((whiteQueens | blackQueens) & mask)   return PieceType::Queen;
+			if ((whiteKings | blackKings) & mask)     return PieceType::King;
+
+			return PieceType::None;
+		}
+
+		// Overload for Position object if needed
+		inline PieceType getPieceType(chess::Position pos) const {
+			return getPieceType(pos.getNumberIndex());
+		}
+		inline Color getColor(int sq) const {
+			uint64_t mask = 1ULL << sq;
+
+			// Check combined bitboards for each piece type
+			if (whitePieces & mask)     return Color::White;
+			//if (whitePieces & mask)     return Color::White;
+
+			return Color::Black;
+		}
+
+		// Overload for Position object if needed
+		inline Color getColor(chess::Position pos) const {
+			return getColor(pos.getNumberIndex());
+		}
 	};
 }

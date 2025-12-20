@@ -32,12 +32,11 @@ namespace chess {
 		bool isPromotion;
 		bool isCastling;
 		chess::PieceType capturedPiece;
-		StateBitboard previousBitboard;
 		// 3. Hash (Optional)
 		//uint64_t previousZobristKey;
 		GameState() = default;
-		GameState(Move m, chess::PieceType piece, StateBitboard previousBitboard, Color color, CastlingRights cr, bool cap = false, bool en = false, bool prom = false, bool cast = false, chess::PieceType pt = chess::PieceType::None)
-			: move(m), playedPiece(piece), previousBitboard(previousBitboard), moveColor(color), previousCastlingRights(cr), isCapture(cap), enPassant(en), isPromotion(prom), isCastling(cast), capturedPiece(pt)
+		GameState(Move m, chess::PieceType piece, Color color, CastlingRights cr, bool cap = false, bool en = false, bool prom = false, bool cast = false, chess::PieceType pt = chess::PieceType::None)
+			: move(m), playedPiece(piece), moveColor(color), previousCastlingRights(cr), isCapture(cap), enPassant(en), isPromotion(prom), isCastling(cast), capturedPiece(pt)
 		{}
 	};
 	class Board {

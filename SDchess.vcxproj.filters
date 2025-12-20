@@ -60,6 +60,9 @@
     <ClCompile Include="Bitboard\Bitboard_MakeMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bitboard\Bitboard_init.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitboard\Bitboard.h">

@@ -1,7 +1,7 @@
 #include "Bitboard.h"
 
 namespace chess {
-	
+
 	bool Bitboard::isAttacked(int square, Color color, uint64_t enemyPawns, uint64_t enemyKnights, uint64_t enemyKings, uint64_t enemyRooks, uint64_t enemyBishops, uint64_t enemyQueens, uint64_t allMyPieces) {
 		// Knight check 
 		if (knightMoves[square] & enemyKnights) return true;
@@ -20,9 +20,9 @@ namespace chess {
 
 		// Sliding pieces 
 		// Rook / queen attacks 
-		if (rookAttacksWithBlockers(square, allMyPieces) & (enemyRooks | enemyQueens)) return true;
+		if (getRookAttacks(square, allPieces) & (enemyRooks | enemyQueens)) return true;
 		// Bishop / queen attacks 
-		if (bishopAttacksWithBlockers(square, allMyPieces) & (enemyBishops | enemyQueens)) return true;
+		if (getBishopAttacks(square, allPieces) & (enemyBishops | enemyQueens)) return true;
 
 		return false;
 	}
@@ -78,14 +78,14 @@ namespace chess {
 		while (bb) {
 			int sq = lsb(bb);
 			bb &= bb - 1;
-			attacks |= rookAttacksWithBlockers(sq, occ);
+			attacks |= getRookAttacks(sq, occ);
 		}
 
 		bb = bishops | queens;
 		while (bb) {
 			int sq = lsb(bb);
 			bb &= bb - 1;
-			attacks |= bishopAttacksWithBlockers(sq, occ);
+			attacks |= getBishopAttacks(sq, occ);
 		}
 		return attacks;
 	}
@@ -99,7 +99,6 @@ namespace chess {
 		uint64_t enemyQueens = color == Color::Black ? whiteQueens : blackQueens;
 
 		int ks = lsb(kingBB);
-		uint64_t occ = allPieces;
 
 		uint64_t attackers = 0ULL;
 
@@ -109,9 +108,9 @@ namespace chess {
 			attackers |= pawnAttacksWhite[ks] & enemyPawns; // white pawns attack up
 		attackers |= knightMoves[ks] & enemyKnights;
 		attackers |= kingMoves[ks] & enemyKings;
-		attackers |= rookAttacksWithBlockers(ks, occ) & (enemyRooks | enemyQueens);
+		attackers |= getRookAttacks(ks, allPieces) & (enemyRooks | enemyQueens);
 		//attackers |= (rookAttacksWithBlockers(ks, occ));
-		attackers |= bishopAttacksWithBlockers(ks, occ) & (enemyBishops | enemyQueens);
+		attackers |= getBishopAttacks(ks, allPieces) & (enemyBishops | enemyQueens);
 
 		return attackers;
 	}
@@ -123,36 +122,34 @@ namespace chess {
 		uint64_t enemyQueens = (color == Color::Black) ? whiteQueens : blackQueens;
 
 		// Occupancy of all pieces
-		uint64_t occ = whitePieces | blackPieces;
 
-		uint64_t checkMask = 0ULL;
-		int attackerSq = getIndex(attackers);
-		uint64_t attackerBB = 1ULL << attackerSq;
-
-		// A friendly piece can capture the attacker
-		checkMask |= attackerBB;
-
-		// If it's a slider, a friendly piece can block the path
-		if (attackerBB & (enemyBishops | enemyRooks | enemyQueens)) {
-			checkMask |= rayBetween(kingSq, attackerSq);
-		}
-
-		// --- Calculate Controlled Mask (Where King cannot go) ---
 		uint64_t controledMask = 0ULL;
-		uint64_t occNoKing = occ ^ (1ULL << kingSq);
+		uint64_t checkMask = 0ULL;
+		while (attackers) {
+			int attackerSq = lsb(attackers);   // index of least-significant 1-bit
+			attackers &= attackers - 1;       // remove that bit
+			uint64_t attackerBB = 1ULL << attackerSq;
 
-		if (attackerBB & (enemyRooks | enemyQueens)) {
-			// Use Magic Bitboard lookup with OccNoKing
-			controledMask |= rookAttacksWithBlockers(attackerSq, occNoKing);
-		}
+			checkMask |= attackerBB;
 
-		if (attackerBB & (enemyBishops | enemyQueens)) {
-			// Use Magic Bitboard lookup with OccNoKing
-			controledMask |= bishopAttacksWithBlockers(attackerSq, occNoKing);
-		}
+			if (attackerBB & (enemyBishops | enemyRooks | enemyQueens)) {
+				checkMask |= rayBetween(kingSq, attackerSq);
+			}
+
+			uint64_t occNoKing = allPieces ^ (1ULL << kingSq);
+
+			if (attackerBB & (enemyRooks | enemyQueens)) {
+				controledMask |= getRookAttacks(attackerSq, occNoKing);
+
+			}
+
+			if (attackerBB & (enemyBishops | enemyQueens)) {
+				controledMask |= getBishopAttacks(attackerSq, occNoKing);
+			}
+		};
+
 		return { checkMask, controledMask };
 	}
-
 	std::pair<IndexSet, std::array<uint64_t, 64>> Bitboard::getPinnedPieces() {
 		uint64_t pinnedPiecesMap = 0ULL;
 		std::array<uint64_t, 64> pinMask;
@@ -193,7 +190,7 @@ namespace chess {
 						blockerSq = sq; // Found the first friendly piece (potential pin)
 					}
 					else {
-						break; 
+						break;
 					}
 				}
 				else if (enemyPieces & bit) {

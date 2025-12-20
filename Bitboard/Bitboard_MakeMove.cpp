@@ -231,4 +231,136 @@ namespace chess {
 		allPieces = whitePieces | blackPieces;
 		sideToMove = !sideToMove;
 	}
+
+	void Bitboard::unmakeMove(const Move& m, PieceType movedPiece, PieceType capturedPiece, Color sideThatMoved) {
+		int fromSq = m.getFromPos().getNumberIndex();
+		int toSq = m.getToPos().getNumberIndex();
+		uint64_t fromMask = (1ULL << fromSq);
+		uint64_t toMask = (1ULL << toSq);
+
+		// ---------------------------------------------------------
+		// 1. Handle En Passant
+		// ---------------------------------------------------------
+		// En Passant is unique because the captured piece is NOT at 'toSq'
+		if (m.isEnPassant()) {
+			// Move the pawn back: toSq -> fromSq
+			movePieceOnBitboard(toSq, fromSq, PieceType::Pawn, sideThatMoved);
+
+			// Restore the captured pawn to the correct square
+			// White EP: moves up, captured pawn was below (toSq - 8)
+			// Black EP: moves down, captured pawn was above (toSq + 8)
+			int capSq = (sideThatMoved == Color::White) ? (toSq - 8) : (toSq + 8);
+			uint64_t capMask = (1ULL << capSq);
+
+			if (sideThatMoved == Color::White) {
+				blackPawns |= capMask; // Restore Black Pawn
+			}
+			else {
+				whitePawns |= capMask; // Restore White Pawn
+			}
+		}
+		// ---------------------------------------------------------
+		// 2. Handle Castling
+		// ---------------------------------------------------------
+		else if (m.isCastling()) {
+			// Move King back: toSq -> fromSq
+			movePieceOnBitboard(toSq, fromSq, PieceType::King, sideThatMoved);
+
+			// Determine Rook positions (logic inverted from makeMove)
+			bool isKingSide = (toSq > fromSq);
+			int rookFrom, rookTo;
+
+			if (sideThatMoved == Color::White) {
+				rookFrom = isKingSide ? 7 : 0; // h1 or a1
+				rookTo = isKingSide ? 5 : 3;   // f1 or d1
+			}
+			else {
+				rookFrom = isKingSide ? 63 : 56; // h8 or a8
+				rookTo = isKingSide ? 61 : 59;   // f8 or d8
+			}
+
+			// Move Rook back: from 'rookTo' (current pos) to 'rookFrom' (original pos)
+			movePieceOnBitboard(rookTo, rookFrom, PieceType::Rook, sideThatMoved);
+		}
+		// ---------------------------------------------------------
+		// 3. Handle Promotion
+		// ---------------------------------------------------------
+		else if (m.getPromotionPiece() != PieceType::None) {
+			// The piece currently at 'toSq' is the PROMOTED piece (e.g., Queen).
+			// We must remove it manually.
+			uint64_t* promoBB = nullptr;
+
+			if (sideThatMoved == Color::White) {
+				switch (m.getPromotionPiece()) {
+				case PieceType::Queen:  promoBB = &whiteQueens; break;
+				case PieceType::Rook:   promoBB = &whiteRooks; break;
+				case PieceType::Bishop: promoBB = &whiteBishops; break;
+				case PieceType::Knight: promoBB = &whiteKnights; break;
+				default: break;
+				}
+				if (promoBB) *promoBB &= ~toMask; // Remove promoted piece
+				whitePawns |= fromMask;           // Place original Pawn back at fromSq
+			}
+			else {
+				switch (m.getPromotionPiece()) {
+				case PieceType::Queen:  promoBB = &blackQueens; break;
+				case PieceType::Rook:   promoBB = &blackRooks; break;
+				case PieceType::Bishop: promoBB = &blackBishops; break;
+				case PieceType::Knight: promoBB = &blackKnights; break;
+				default: break;
+				}
+				if (promoBB) *promoBB &= ~toMask; // Remove promoted piece
+				blackPawns |= fromMask;           // Place original Pawn back at fromSq
+			}
+		}
+		// ---------------------------------------------------------
+		// 4. Standard Move
+		// ---------------------------------------------------------
+		else {
+			// Simply move the piece back: toSq -> fromSq
+			movePieceOnBitboard(toSq, fromSq, movedPiece, sideThatMoved);
+		}
+
+		// ---------------------------------------------------------
+		// 5. Restore Captured Piece (Standard & Promotion captures)
+		// ---------------------------------------------------------
+		// Note: We skip this for En Passant as it was handled in step 1.
+		if (capturedPiece != PieceType::None && !m.isEnPassant()) {
+			Color enemy = !sideThatMoved;
+			uint64_t* captureBB = nullptr;
+
+			// Determine which bitboard to restore the piece to
+			if (enemy == Color::White) {
+				switch (capturedPiece) {
+				case PieceType::Pawn:   captureBB = &whitePawns; break;
+				case PieceType::Knight: captureBB = &whiteKnights; break;
+				case PieceType::Bishop: captureBB = &whiteBishops; break;
+				case PieceType::Rook:   captureBB = &whiteRooks; break;
+				case PieceType::Queen:  captureBB = &whiteQueens; break;
+				case PieceType::King:   captureBB = &whiteKings; break;
+				default: break;
+				}
+			}
+			else {
+				switch (capturedPiece) {
+				case PieceType::Pawn:   captureBB = &blackPawns; break;
+				case PieceType::Knight: captureBB = &blackKnights; break;
+				case PieceType::Bishop: captureBB = &blackBishops; break;
+				case PieceType::Rook:   captureBB = &blackRooks; break;
+				case PieceType::Queen:  captureBB = &blackQueens; break;
+				case PieceType::King:   captureBB = &blackKings; break;
+				default: break;
+				}
+			}
+
+			// Add the captured piece back to 'toSq'
+			if (captureBB) *captureBB |= toMask;
+		}
+
+		// 6. Update global bitboards (occupancy)
+		updateOccupancy();
+
+		// Force sideToMove back to the side that moved (because updateOccupancy flips it)
+		sideToMove = sideThatMoved;
+	}
 }

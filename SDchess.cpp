@@ -38,6 +38,7 @@ int perft_recursive(chess::Board& board, int depth) {
 	auto moves = board.getAllLegalMoves();
 	for (chess::Move move : moves) {
 		board.makeMove(move);
+		board.evaluate();
 		numPositions += perft_recursive(board, depth - 1);
 		board.unmakeMove();
 		//std::cout << move.getMoveText() << ": " << numPositions << std::endl;
@@ -52,6 +53,7 @@ int moveGenerationTest(chess::Board& board, int depth) {
 	for (chess::Move move : moves) {
 
 		board.makeMove(move);
+		board.evaluate();
 		int numPositions = perft_recursive(board, depth - 1);
 		board.unmakeMove();
 
@@ -72,10 +74,10 @@ int main()
 	using std::chrono::duration_cast;
 	using std::chrono::duration;
 	using std::chrono::milliseconds;
-	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	std::string fen = "3b4/p6n/k2K2pn/P2p4/1Qr2N2/5qp1/3B4/2R5 w - - 0 1";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
-	//std::string fen = "3k4/8/8/8/8/8/8/3K3R w - - 1 1";
+	//std::string fen = "3b4/p6n/k2K2pn/P2p4/1Qr2N2/5qp1/3B4/2R5 w - - 0 1";
 
 	auto board = chess::Board(fen);
 	//std::cout << board.evaluate();
