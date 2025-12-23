@@ -2,13 +2,14 @@
 #include "evaluation_parameters.cpp"
 namespace chess {
 	int Board::evaluate(){
-		int whiteMaterial =2*getMaterialScore(Color::White);
-		int blackMaterial =2* getMaterialScore(Color::Black);
+		bitboard.updateMaterial();
+		int whiteMaterial =getMaterialScore(Color::White);
+		int blackMaterial =getMaterialScore(Color::Black);
 
 		int whitePieceSquare = getPositionScore(Color::White);
 		int blackPieceSquare = getPositionScore(Color::Black);
 
-		int score = (whiteMaterial - blackMaterial);
+		int score = (whiteMaterial - blackMaterial)+
 			(whitePieceSquare - blackPieceSquare);
 		return score;
 	}

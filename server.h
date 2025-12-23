@@ -3,8 +3,10 @@
 #include <string>
 #include "Board/Board.h"
 #include "Position/Position.h"
+#include "json.hpp"
 
 #include "httplib.h" // Make sure this file is in your project directory
+ using json = nlohmann::json;
 
 int server() {
     int i = 0;
@@ -19,26 +21,13 @@ int server() {
         // 1. Simple manual parsing of the body (e.g., { "from": 10, "to": 20 })
         // In a real app, use nlohmann/json, but here we do it manually to match your style
         std::string body = req.body;
-
         std::string valFrom = "";
-        int valTo = 0;
 
         // basic extraction logic
         try {
-            size_t posFen = body.find("\"fen\":");
 
-            if (posFen != std::string::npos) {
-                // 2. Find the FIRST quote after the key (skipping "fen": itself)
-                size_t startQuote = body.find("\"", posFen + 6);
-
-                // 3. Find the SECOND quote after the first one
-                size_t endQuote = body.find("\"", startQuote + 1);
-
-                // 4. Extract only what is between the quotes
-                if (startQuote != std::string::npos && endQuote != std::string::npos) {
-                    valFrom = body.substr(startQuote + 1, endQuote - startQuote - 1);
-                }
-            }
+        json j = json::parse(body);
+        valFrom = j["fen"];
         }
         catch (...) {
             std::cout << "Error parsing JSON" << std::endl;

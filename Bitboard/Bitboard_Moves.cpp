@@ -62,28 +62,25 @@ namespace chess {
 		return ray;
 	}
 
-	MoveList Bitboard::generateKingMovesOnly(Color side) {
+	MoveList Bitboard::generateKingMovesOnly(int sq, chess::Color color) {
 		MoveList moves;
-		uint64_t kingBB = (side == Color::White) ? whiteKings : blackKings;
-		int from = lsb(kingBB);
 
-		uint64_t friends = (side == Color::White) ? whitePieces : blackPieces;
-		uint64_t enemyAttacks = controledSquares(side == Color::White ? Color::Black : Color::White);
+		uint64_t friends = (color == Color::White) ? whitePieces : blackPieces;
+		uint64_t enemyAttacks = controledSquares(color == Color::White ? Color::Black : Color::White);
 
 		// get possible king moves
-		uint64_t mask = kingMoves[from];
+		uint64_t mask = kingMoves[sq];
 
 		// remove own pieces
 		mask &= ~friends;
 
 		// remove squares attacked by opponent
 		mask &= ~enemyAttacks;
-
 		while (mask) {
 			int to = lsb(mask);
 			mask &= mask - 1;
 
-			moves.push_back(Move(chess::Position::numToPosition(from), chess::Position::numToPosition(to)));   // your Move struct
+			moves.push_back(Move(chess::Position::numToPosition(sq), chess::Position::numToPosition(to)));   // your Move struct
 		}
 		return moves;
 	}

@@ -414,7 +414,7 @@ namespace chess {
 		return alpha;
 	}
 	Move Board::findBestMove(int depth) {
-		int bestVal = (sideToMove == Color::White) ? -INF : INF;
+		int bestVal = (sideToMove == Color::White) ? -INF+1 : INF-1;
 		Move bestMove;
 		int alpha = -INF;
 		int beta = INF;

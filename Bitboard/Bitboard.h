@@ -147,6 +147,7 @@ namespace chess {
 		}
 		IndexSet material[2][6];
 		IndexSet getBitList(uint64_t bb);
+		void updateMaterial();
 		Bitboard(); // default constructor
 		Bitboard(chess::VectorBoard &board, chess::Color side);
 		void loadBitboard(chess::VectorBoard& board, chess::Color side);
@@ -163,7 +164,7 @@ namespace chess {
 		uint64_t getAllKingMoves(int sq, chess::Color color);
 		uint64_t getAllKnightMoves(int sq, chess::Color color);
 		uint64_t rayBetween(int kingSq, int attackerSq);
-		MoveList generateKingMovesOnly(Color side);
+		MoveList generateKingMovesOnly(int sq, chess::Color color);
 
 
 

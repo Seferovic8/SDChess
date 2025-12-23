@@ -259,8 +259,7 @@ namespace chess {
 		if (this->isCheck()) {
 			int numAttackers = bitboard.getBitList(attackers).size();
 			if (numAttackers >= 2) {
-				pseudoMoves = MoveList();
-				generatePieceMoves(chess::Position::numToPosition(kingIndex), pseudoMoves);
+				pseudoMoves = bitboard.generateKingMovesOnly(kingIndex, sideToMove);
 			}
 		}
 		auto pinned = bitboard.getPinnedPieces();

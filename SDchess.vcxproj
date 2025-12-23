@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="Bitboard\Bitboard.h" />
     <ClInclude Include="Board\Board.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="server.h" />
     <ClInclude Include="httplib.h" />
     <ClInclude Include="Move\Move.h" />

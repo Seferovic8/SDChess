@@ -64,19 +64,7 @@ namespace chess {
 		blackPieces = blackPawns | blackKnights | blackBishops | blackRooks | blackQueens | blackKings;
 		allPieces = whitePieces | blackPieces;
 
-		material[0][0] = getBitList(whitePawns);
-		material[0][1] = getBitList(whiteKnights);
-		material[0][2] = getBitList(whiteBishops);
-		material[0][3] = getBitList(whiteRooks);
-		material[0][4] = getBitList(whiteQueens);
-		material[0][5] = getBitList(whiteKings);
 
-		material[1][0] = getBitList(blackPawns);
-		material[1][1] = getBitList(blackKnights);
-		material[1][2] = getBitList(blackBishops);
-		material[1][3] = getBitList(blackRooks);
-		material[1][4] = getBitList(blackQueens);
-		material[1][5] = getBitList(blackKings);
 	}
 
 
@@ -134,5 +122,20 @@ namespace chess {
 			lista.insert(sq);
 		}
 		return lista;
+	}
+	void Bitboard::updateMaterial() {
+		material[0][0] = getBitList(whitePawns);
+		material[0][1] = getBitList(whiteKnights);
+		material[0][2] = getBitList(whiteBishops);
+		material[0][3] = getBitList(whiteRooks);
+		material[0][4] = getBitList(whiteQueens);
+		material[0][5] = getBitList(whiteKings);
+
+		material[1][0] = getBitList(blackPawns);
+		material[1][1] = getBitList(blackKnights);
+		material[1][2] = getBitList(blackBishops);
+		material[1][3] = getBitList(blackRooks);
+		material[1][4] = getBitList(blackQueens);
+		material[1][5] = getBitList(blackKings);
 	}
 }

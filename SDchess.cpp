@@ -74,47 +74,19 @@ int main()
 	using std::chrono::duration_cast;
 	using std::chrono::duration;
 	using std::chrono::milliseconds;
-	std::string fen = "3b4/p6n/k2K2pn/P2p4/1Qr2N2/5qp1/3B4/2R5 w - - 0 1";
+	std::string fen = "8/6pp/3Q4/1k6/8/2P1B1P1/1P1N1P1P/4K2R b K - 6 32";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
 	//std::string fen = "3b4/p6n/k2K2pn/P2p4/1Qr2N2/5qp1/3B4/2R5 w - - 0 1";
 
 	auto board = chess::Board(fen);
 	//std::cout << board.evaluate();
-	//server();
-	//auto mv = chess::Move("D2", "D4");
-	//	board.makeMove(mv);
-	//	board.printBoard();
-	//	return 1;
-	
+	server();
 
-
-
-	//while (true) {
-	//    auto kada = testiram();
-	//  //  std::cout << kada.first<<std::endl;
-	//    auto board = chess::Board(kada.first);
-	//    if (kada.second != numPositions) {
-	//        std::cout << kada.first << ", numOfMoves: " <<numPositions <<std::endl;
-	//        return 0;
-	//    }
-	//}
-
-	//board.printBoard();
-	//board.isPinned();
-	//auto moves = board.generatePieceMoves(chess::Position("E8"));
-		//auto move = chess::Move("D1","D2",false,false,chess::PieceType::None);
-	//board.makeMove(move);
-	/*move = chess::Move("D8", "E8", false, false, chess::PieceType::None);
-	board.makeMove(move);*/
-	//board.unmakeMove();
-	//move = chess::Move("E1", "G1", false, true, chess::PieceType::None);
-	//board.makeMove(move);
-	//board.unmakeMove();
 	auto moves = board.getAllLegalMoves();
 	board.printBoard();
 	auto t1 = high_resolution_clock::now();
-	    int numPositions = moveGenerationTest(board, 6);
+	    int numPositions = moveGenerationTest(board, 2);
 	std::cout << numPositions << std::endl;
    //int numPositions = moveGenerationTest(board, 5);
    //std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
