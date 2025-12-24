@@ -38,7 +38,6 @@ namespace chess {
 					position = chess::Position::flipPosition(position);
 				}
 				score += weights.PieceSquareTables[i][position]; 
-				auto ba = bitboard.material[static_cast<int>(color)][i]; 
 			}
 		}
 		return score;

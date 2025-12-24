@@ -224,10 +224,10 @@ namespace chess {
 		uint64_t enemyQueens = sideToMove == Color::Black ? whiteQueens : blackQueens;
 		uint64_t allMyPieces = allPieces;
 		//pBitboard(~1ULL);
-		uint64_t myPawnMask = (1ULL << move.getFromPos().getNumberIndex());
+		uint64_t myPawnMask = (1ULL << move.getFromSq());
 		friendlyPawns = (myPawnMask ^ friendlyPawns);
 		allMyPieces = (myPawnMask ^ allMyPieces);
-		myPawnMask = (1ULL << move.getToPos().getNumberIndex());
+		myPawnMask = (1ULL << move.getToSq());
 		allMyPieces = (myPawnMask | allMyPieces);
 		friendlyPawns = (myPawnMask | friendlyPawns);
 
@@ -239,13 +239,13 @@ namespace chess {
 		return isAttacked(lsb(kingBB), sideToMove, enemyPawns, enemyKnights, enemyKings, enemyRooks, enemyBishops, enemyQueens, allMyPieces);
 
 	}
-	bool Bitboard::canCastle(bool kingSide, chess::Position fromPos) {
+	bool Bitboard::canCastle(bool kingSide, int fromPos) {
 
 		int rookPos = (kingSide) ? 7 : 0;
 		if (sideToMove == Color::Black) {
 			rookPos += 56;
 		}
-		uint64_t castleRay = rayBetween(fromPos.getNumberIndex(), rookPos);
+		uint64_t castleRay = rayBetween(fromPos, rookPos);
 		if (castleRay & allPieces) return false;
 
 		if (!kingSide) {

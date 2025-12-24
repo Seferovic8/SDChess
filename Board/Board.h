@@ -39,9 +39,11 @@ namespace chess {
 			: move(m), playedPiece(piece), moveColor(color), previousCastlingRights(cr), isCapture(cap), enPassant(en), isPromotion(prom), isCastling(cast), capturedPiece(pt)
 		{}
 	};
+	enum Check{Undefined,Yes,No};
 	class Board {
 	private:
 		VectorBoard board;
+		Check check;
 		Bitboard bitboard;
 		std::vector<GameState> history;
 		CastlingRights castling;
@@ -59,7 +61,7 @@ namespace chess {
 		int minimax_alpha_beta(int depth, int alpha, int beta);
 		int quiescence_search(int alpha, int beta);
 		//Board_MoveGen.cpp
-		void generatePieceMoves(chess::Position fromPos, MoveList& moves);
+		void generatePawnMoves(int sq, MoveList& moves);
 		MoveList getAllPseudoLegalMoves();
 		MoveList getAllLegalMoves();
 		MoveList getAllLegalCaptures();

@@ -11,38 +11,54 @@ namespace chess {
 	//	: _from(chess::Position(0, 0)), _to(chess::Position(0, 0)), _enPassant(false), _isCastling(false),
 	//	_promotionPiece(PieceType::None)
 	//{}
-	Move::Move() : _from(chess::Position(0, 0)), _to(chess::Position(0, 0)), _enPassant(false), _isCastling(false), _promotionPiece(PieceType::None) {}
-	Move::Move(chess::Position from, chess::Position to, bool enPassant, bool isCastling, chess::PieceType promotionPiece):_from(from),_to(to),
-	_enPassant(enPassant),_isCastling(isCastling), _promotionPiece(promotionPiece) {}
+	Move::Move() : data(0) {}
+	Move::Move(int from, int to, bool enPassant, Castling castling, chess::PieceType promotionPiece) {
+		uint16_t flags = 0;
 
-	Move::Move(int fromRow, int fromCol, int toRow, int toCol, bool enPassant, bool isCastling, chess::PieceType promotionPiece) :_from(chess::Position(fromRow, fromCol)), _to(chess::Position(toRow, toCol)),
-		_enPassant(enPassant), _isCastling(isCastling), _promotionPiece(promotionPiece) {}
-	Move::Move(std::string fromSquare, std::string toSquare, bool enPassant, bool isCastling, chess::PieceType promotionPiece)
-		: _enPassant(enPassant), _isCastling(isCastling), _promotionPiece(promotionPiece) {
-		_from = Position::indexToPos(fromSquare);
-		_to = Position::indexToPos(toSquare);
-
-	}
-	std::string Move::getMoveText() const {
-		std::string promotion = "";
-		if (_promotionPiece != chess::PieceType::None) {
-			promotion += chess::pieceTypeToChar(_promotionPiece);
+		if (castling == Castling::King) {
+			flags = KING_CASTLE;
 		}
-		return Position::squareToString(_from) + " -> " + Position::squareToString(_to)+promotion;
+		else if (castling == Castling::Queen) { // <--- CHANGED THIS LINE
+			flags = QUEEN_CASTLE;
+		}
+
+		if (enPassant) flags = EP_CAPTURE;
+		if (promotionPiece == PieceType::Queen) flags = PROMOTE_QUEEN;
+		if (promotionPiece == PieceType::Bishop) flags = PROMOTE_BISHOP;
+		if (promotionPiece == PieceType::Rook) flags = PROMOTE_ROOK;
+		if (promotionPiece == PieceType::Knight) flags = PROMOTE_KNIGHT;
+
+		data = (from & 0x3F) | ((to & 0x3F) << 6) | flags;
 	}
-	chess::Position Move::getFromPos()const {
-		return _from;
+
+
+	Move::Move(chess::Position from, chess::Position to, bool enPassant, Castling castling, chess::PieceType promotionPiece)
+		: Move(from.getNumberIndex(), to.getNumberIndex(), enPassant, castling, promotionPiece)
+	{
+		// Body is empty! The delegation happens after the ':'
 	}
-	chess::Position Move::getToPos()const {
-		return _to;
+
+	// 3. Row/Col Constructor -> Delegates to Main
+	Move::Move(int fromRow, int fromCol, int toRow, int toCol, bool enPassant, Castling castling, chess::PieceType promotionPiece)
+		: Move(chess::Position::rowColToSquare(fromRow, fromCol),
+			chess::Position::rowColToSquare(toRow, toCol),
+			enPassant, castling, promotionPiece)
+	{
 	}
-	bool Move::isCastling() const {
-		return _isCastling;
+
+	// 4. String Constructor -> Delegates to Main
+	Move::Move(std::string fromSquare, std::string toSquare, bool enPassant, Castling castling, chess::PieceType promotionPiece)
+		: Move(chess::Position::positionToNum(chess::Position::indexToPos(fromSquare)),
+			chess::Position::positionToNum(chess::Position::indexToPos(toSquare)),
+			enPassant, castling, promotionPiece)
+	{
 	}
-	chess::PieceType Move::getPromotionPiece() const {
-		return _promotionPiece;
-	}
-	bool Move::isEnPassant() const {
-		return _enPassant;
+	std::string Move::getMoveText() {
+		std::string promotion = "";
+		auto prom = this->getPromotionPiece();
+		if (prom != chess::PieceType::None) {
+			promotion += chess::pieceTypeToChar(prom);
+		}
+		return Position::squareToString(this->getFromPos()) + " -> " + Position::squareToString(this->getToPos())+promotion;
 	}
 }

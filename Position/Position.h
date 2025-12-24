@@ -23,6 +23,7 @@ namespace chess {
 		static chess::Position indexToPos(std::string squareName);
 		static chess::Position numToPosition(int sq);
 		static int positionToNum(chess::Position pos);
+		static int rowColToSquare(int row, int column);
 		static int flipPosition(int sq);
 		int getNumberIndex();
 	};

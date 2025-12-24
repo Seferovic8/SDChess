@@ -22,8 +22,8 @@ namespace chess {
 		updateOccupancy();
 		sideToMove=side;
 	}
-	void Bitboard::removeEnemyPiece(Color enemy, chess::Position pos) {
-		uint64_t mask = ~(1ULL << pos.getNumberIndex());
+	void Bitboard::removeEnemyPiece(Color enemy, int pos) {
+		uint64_t mask = ~(1ULL << pos);
 
 		if (enemy == Color::White) {
 			whitePawns &= mask;
@@ -109,8 +109,8 @@ namespace chess {
 	}
 	void Bitboard::handleEnPassant(const Move& m, Color side)
 	{
-		int fromSq = m.getFromPos().getNumberIndex();
-		int toSq = m.getToPos().getNumberIndex();
+		int fromSq = m.getFromSq();
+		int toSq = m.getToSq();
 		movePieceOnBitboard(fromSq, toSq, chess::PieceType::Pawn, side);
 
 		// Captured pawn is behind the destination square
@@ -141,8 +141,8 @@ namespace chess {
 
 	void Bitboard::makeMove(const Move& m, PieceType pt, Color pieceColor, bool isCapture)
 	{
-		int fromSq = m.getFromPos().getNumberIndex();
-		int toSq = m.getToPos().getNumberIndex();
+		int fromSq = m.getFromSq();
+		int toSq = m.getToSq();
 
 		// 1. Remove captured piece
 		if (isCapture) {
@@ -173,8 +173,8 @@ namespace chess {
 	{
 
 		// You know the king moves from e-file to c or g.
-		int kingFrom = m.getFromPos().getNumberIndex();
-		int kingTo = m.getToPos().getNumberIndex();
+		int kingFrom = m.getFromSq();
+		int kingTo = m.getToSq();
 		movePieceOnBitboard(kingFrom, kingTo, chess::PieceType::King, side);
 
 		// Determine rook movement
@@ -233,8 +233,8 @@ namespace chess {
 	}
 
 	void Bitboard::unmakeMove(const Move& m, PieceType movedPiece, PieceType capturedPiece, Color sideThatMoved) {
-		int fromSq = m.getFromPos().getNumberIndex();
-		int toSq = m.getToPos().getNumberIndex();
+		int fromSq = m.getFromSq();
+		int toSq = m.getToSq();
 		uint64_t fromMask = (1ULL << fromSq);
 		uint64_t toMask = (1ULL << toSq);
 

@@ -199,15 +199,15 @@ namespace chess {
 	}
 
 	void Board::makeMove(chess::Move move) {
-		chess::Position fromPos = move.getFromPos();
-		chess::Position toPos = move.getToPos();
-
+		int fromPos = move.getFromSq();
+		int toPos = move.getToSq();
+		check = Check::Undefined;
 
 
 		chess::PieceType pieceType = bitboard.getPieceType(fromPos);
 		chess::Color pieceColor = bitboard.getColor(fromPos);
 		chess::CastlingRights previousCastling = castling;
-		auto k = move.getMoveText();
+
 		sideToMove = !sideToMove;
 	//	board[fromPos.row][fromPos.column].removePiece();
 
@@ -254,7 +254,7 @@ namespace chess {
 			rookCastling(fromPos, pieceColor);
 		}
 		if (move.getPromotionPiece() == chess::PieceType::None) {
-			if (bitboard.hasPiece(toPos)) {
+			if (bitboard.hasPiece(move.getToSq())) {
 				chess::PieceType capturedPieceType = bitboard.getPieceType(toPos);
 				if (capturedPieceType == chess::PieceType::Rook) {
 
@@ -297,48 +297,10 @@ namespace chess {
 		GameState lastState = history.back();
 		history.pop_back();
 		sideToMove = !sideToMove;
+				check = Check::Undefined;
+
 		castling = lastState.previousCastlingRights;
 		bitboard.unmakeMove(lastState.move,lastState.playedPiece,lastState.capturedPiece,lastState.moveColor);
-
-		/*chess::Position fromPos = lastState.move.getFromPos();
-		chess::Position toPos = lastState.move.getToPos();
-		board[toPos.row][toPos.column].removePiece();
-		if (lastState.enPassant) {
-			board[fromPos.row][fromPos.column].addPiece(createPiece(chess::PieceType::Pawn, lastState.moveColor));
-			board[fromPos.row][toPos.column].addPiece(createPiece(chess::PieceType::Pawn, !lastState.moveColor));
-
-			return;
-		}
-		if (lastState.isPromotion) {
-			board[fromPos.row][fromPos.column].addPiece(createPiece(chess::PieceType::Pawn, lastState.moveColor));
-
-			if (lastState.isCapture) {
-				board[toPos.row][toPos.column].addPiece(createPiece(lastState.capturedPiece, !lastState.moveColor));
-			}
-			return;
-		}
-		if (lastState.isCastling) {
-			int pieceRow = (lastState.moveColor == Color::White) ? 7 : 0;
-			if (toPos.column == 6) {
-				board[fromPos.row][fromPos.column].addPiece(chess::createPiece(chess::PieceType::King, lastState.moveColor));
-
-				board[toPos.row][5].removePiece();
-				board[toPos.row][7].addPiece(chess::createPiece(chess::PieceType::Rook, lastState.moveColor));
-			}
-			else {
-				board[fromPos.row][fromPos.column].addPiece(chess::createPiece(chess::PieceType::King, lastState.moveColor));
-				board[toPos.row][3].removePiece();
-				board[toPos.row][0].addPiece(chess::createPiece(chess::PieceType::Rook, lastState.moveColor));
-
-			}
-			return;
-		}
-
-		board[fromPos.row][fromPos.column].addPiece(chess::createPiece(lastState.playedPiece, lastState.moveColor));
-		if (lastState.isCapture) {
-
-			board[toPos.row][toPos.column].addPiece(chess::createPiece(lastState.capturedPiece, !lastState.moveColor));
-		}*/
 
 	}
 	const int INF = 1e9;

@@ -38,6 +38,9 @@ chess::Position Position::numToPosition(int sq) {
 int  Position::positionToNum(chess::Position pos) {
 	return (7 - pos.row) * 8 + pos.column;
 }
+int Position::rowColToSquare(int row,int column) {
+	return (7 -row) * 8 + column;
+}
 int Position::flipPosition(int pos) {
 	int row = pos / 8;
 	int col = pos % 8;

@@ -174,13 +174,13 @@ namespace chess {
 		uint64_t attackersToKing(Color color);
 		std::pair<uint64_t, uint64_t> getCheckMask(int kingSq, Color color, uint64_t attackers);
 		std::pair<IndexSet, std::array<uint64_t, 64>> getPinnedPieces();
-		bool canCastle(bool kingSide, chess::Position fromPos);
+		bool canCastle(bool kingSide, int fromPos);
 		bool canEnPassant(Move move);
 
 		//Bitboard_MakeMove.cpp
 		StateBitboard getBitboardState();
 		void loadBitboardFromState(StateBitboard state,Color side);
-		void removeEnemyPiece(Color enemy, chess::Position pos);
+		void removeEnemyPiece(Color enemy, int pos);
 		void movePieceOnBitboard(int fromSq, int toSq, PieceType pt, Color side);
 		void handlePromotion(Color side, int toSq, PieceType promo);
 		void handleEnPassant(const Move& m, Color side);

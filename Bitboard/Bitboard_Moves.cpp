@@ -44,6 +44,7 @@ namespace chess {
 		//return getBitList(knightMoves[sq] & ~myPieces);
 	}
 	uint64_t Bitboard::getAllKingMoves(int sq, chess::Color color) {
+
 		uint64_t myPieces = color == chess::Color::White ? whitePieces : blackPieces;
 		return kingMoves[sq] & ~myPieces;
 		//return getBitList(kingMoves[sq] & ~myPieces);
@@ -80,7 +81,7 @@ namespace chess {
 			int to = lsb(mask);
 			mask &= mask - 1;
 
-			moves.push_back(Move(chess::Position::numToPosition(sq), chess::Position::numToPosition(to)));   // your Move struct
+			moves.push_back(Move(sq, to));   // your Move struct
 		}
 		return moves;
 	}
