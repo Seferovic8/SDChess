@@ -33,10 +33,10 @@ namespace chess {
 		bool isCastling;
 		chess::PieceType capturedPiece;
 		// 3. Hash (Optional)
-		//uint64_t previousZobristKey;
+		uint64_t previousBoardState;
 		GameState() = default;
-		GameState(Move m, chess::PieceType piece, Color color, CastlingRights cr, bool cap = false, bool en = false, bool prom = false, bool cast = false, chess::PieceType pt = chess::PieceType::None)
-			: move(m), playedPiece(piece), moveColor(color), previousCastlingRights(cr), isCapture(cap), enPassant(en), isPromotion(prom), isCastling(cast), capturedPiece(pt)
+		GameState(Move m, chess::PieceType piece, Color color, CastlingRights cr, uint64_t previousBoardState, bool cap = false, bool en = false, bool prom = false, bool cast = false, chess::PieceType pt = chess::PieceType::None)
+			: move(m), playedPiece(piece), moveColor(color), previousCastlingRights(cr), isCapture(cap), enPassant(en), isPromotion(prom), isCastling(cast), capturedPiece(pt), previousBoardState(previousBoardState)
 		{}
 	};
 	enum Check{Undefined,Yes,No};
@@ -55,6 +55,7 @@ namespace chess {
 		Board(std::string fen);
 		void printBoard() const;
 		bool isInside(int r, int c);
+		bool isRepetition();
 		void makeMove(chess::Move);
 		void unmakeMove();
 		Move findBestMove(int depth);
@@ -73,7 +74,8 @@ namespace chess {
 		int evaluate();
 		int getMaterialScore(Color color);
 		int getMobilityScore(Color color);
-		int getPositionScore(Color color);
+		std::array<int,3> getPestoScore(Color color);
+		int getPositionalScore();
 
 	};
 }

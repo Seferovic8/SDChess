@@ -117,12 +117,7 @@ namespace chess {
 		bitboard.loadBitboard(board, sideToMove);
 	}
 	Board::Board(std::string fen) {
-		//history.push_back(Move("B7", "B5"));
 
-	//	board.resize(8);
-		//for (int r = 0; r < 8; r++) {
-	//		board[r].resize(8);
-	//	}
 		int row = 0, col = 0;
 
 		int i = 0;
@@ -197,7 +192,15 @@ namespace chess {
 	bool Board::isInside(int r, int c) {
 		return !(r > 7 || r < 0 || c>7 || c < 0);
 	}
-
+	bool Board::isRepetition() {
+		int hSize = history.size()-1;
+		if (hSize >= 5) {
+			if (history[hSize].previousBoardState == history[hSize - 2].previousBoardState == history[hSize - 4].previousBoardState) {
+				return true;
+			}
+		}
+		return false;
+	}
 	void Board::makeMove(chess::Move move) {
 		int fromPos = move.getFromSq();
 		int toPos = move.getToSq();
@@ -225,7 +228,7 @@ namespace chess {
 
 			}*/
 			castling.castlingFinished();
-			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, false, true);
+			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces(), false, false, false, true);
 			bitboard.handleCastling(move, pieceColor);
 			history.push_back(gameState);
 			return;
@@ -234,7 +237,7 @@ namespace chess {
 			/*board[fromPos.row][toPos.column].removePiece();
 			board[toPos.row][toPos.column].addPiece(chess::createPiece(pieceType, pieceColor));*/
 
-			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, true, false, false, pieceType);
+			GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces(), true, true, false, false, pieceType);
 			bitboard.handleEnPassant(move, pieceColor);
 			history.push_back(gameState);
 			return;
@@ -260,12 +263,12 @@ namespace chess {
 
 					rookCastling(toPos, !pieceColor);
 				}
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, false, false, capturedPieceType);
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces(), true, false, false, false, capturedPieceType);
 				bitboard.makeMove(move, pieceType, pieceColor, true);
 				history.push_back(gameState);
 			}
 			else {
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling);
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces());
 				bitboard.makeMove(move, pieceType, pieceColor, false);
 				history.push_back(gameState);
 			}
@@ -279,12 +282,12 @@ namespace chess {
 
 					rookCastling(toPos, !pieceColor);
 				}
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, true, false, true, false, capturedPieceType);
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces(), true, false, true, false, capturedPieceType);
 				bitboard.makeMove(move, pieceType, pieceColor, true);
 				history.push_back(gameState);
 			}
 			else {
-				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, false, false, true, false);
+				GameState gameState = GameState(move, pieceType, !sideToMove, previousCastling, bitboard.getAllPieces(), false, false, true, false);
 				bitboard.makeMove(move, pieceType, pieceColor, false);
 				history.push_back(gameState);
 			}
@@ -305,9 +308,12 @@ namespace chess {
 	}
 	const int INF = 1e9;
 	int Board::minimax_alpha_beta(int depth, int alpha, int beta) {
+		if (isRepetition()) {
+			return 0; 
+		}
 		if (depth == 0) {
-			return evaluate();
-			//return quiescence_search(alpha, beta);
+			//return evaluate();
+			return quiescence_search(alpha, beta);
 		}
 		MoveList moves = getAllLegalMoves();
 

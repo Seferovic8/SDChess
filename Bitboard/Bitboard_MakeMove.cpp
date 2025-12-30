@@ -4,23 +4,8 @@ namespace chess {
 		return StateBitboard(whitePawns, whiteQueens, whiteKings, whiteBishops, whiteKnights, whiteRooks,
 			blackPawns, blackQueens, blackKings, blackBishops, blackKnights, blackRooks);
 	}
-	void Bitboard::loadBitboardFromState(StateBitboard state, Color side) {
-		whitePawns = state.whitePawns;
-		whiteQueens = state.whiteQueens;
-		whiteKings = state.whiteKings;
-		whiteBishops = state.whiteBishops;
-		whiteKnights = state.whiteKnights;
-		whiteRooks = state.whiteRooks;
-
-		blackPawns = state.blackPawns;
-		blackQueens = state.blackQueens;
-		blackKings = state.blackKings;
-		blackBishops = state.blackBishops;
-		blackKnights = state.blackKnights;
-		blackRooks = state.blackRooks;
-
-		updateOccupancy();
-		sideToMove=side;
+	uint64_t Bitboard::getAllPieces() {
+		return allPieces;
 	}
 	void Bitboard::removeEnemyPiece(Color enemy, int pos) {
 		uint64_t mask = ~(1ULL << pos);

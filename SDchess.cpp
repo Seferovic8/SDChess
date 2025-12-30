@@ -74,15 +74,16 @@ int main()
 	using std::chrono::duration_cast;
 	using std::chrono::duration;
 	using std::chrono::milliseconds;
-	std::string fen = "R2q3b/2R1PpP1/7N/B2k2K1/3p1r2/2Pp4/5n2/8 w - - 0 1";
+	//std::string fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
+	std::string fen = "6k1/3rP3/1nP1N1P1/7Q/2p1P2p/1b6/4K1Pp/1R6 w - - 0 1";
 	//std::string fen = "8/8/3Q4/1k6/8/4B3/3N4/4K2R w K - 6 32";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
 	//std::string fen = "3b4/p6n/k2K2pn/P2p4/1Qr2N2/5qp1/3B4/2R5 w - - 0 1";
 
 	auto board = chess::Board(fen);
-	//std::cout << board.evaluate();
-	//server();
+	std::cout << board.evaluate();
+	server();
 
 	auto moves = board.getAllLegalMoves();
 	board.printBoard();

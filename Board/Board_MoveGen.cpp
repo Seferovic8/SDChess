@@ -48,7 +48,6 @@ namespace chess {
 				moves.push_back(Move(sq, targetSq));
 
 				// --- Double Push ---
-				// Only possible if Single Push was valid and we are on start rank
 				if ((7 - (sq / 8)) == startRankIdx) {
 					int doubleTarget = sq + (forward * 2);
 					if (!(allPieces & (1ULL << doubleTarget))) {
@@ -58,69 +57,69 @@ namespace chess {
 			}
 		}
 
-			// --- Captures ---
-			int captures[] = { captureLeft, captureRight };
-			for (int capOffset : captures) {
-				int capSq = sq + capOffset;
-				if (capSq < 0 || capSq >= 64) continue;
+		// --- Captures ---
+		int captures[] = { captureLeft, captureRight };
+		for (int capOffset : captures) {
+			int capSq = sq + capOffset;
+			if (capSq < 0 || capSq >= 64) continue;
 
-				// Check file wrap-around (abs(file1 - file2) must be 1)
-				if (abs((sq % 8) - (capSq % 8)) > 1) continue;
+			// Check file wrap-around (abs(file1 - file2) must be 1)
+			if (abs((sq % 8) - (capSq % 8)) > 1) continue;
 
-				if (enemyPieces & (1ULL << capSq)) {
-					int targetRank = capSq / 8;
+			if (enemyPieces & (1ULL << capSq)) {
+				int targetRank = capSq / 8;
 
-					if (targetRank == promoRankIdx) {
-						moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Queen));
-						moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Rook));
-						moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Bishop));
-						moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Knight));
-					}
-					else {
-						moves.push_back(Move(sq, capSq));
+				if (targetRank == promoRankIdx) {
+					moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Queen), true);
+					moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Rook), true);
+					moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Bishop), true);
+					moves.push_back(Move(sq, capSq, false, Castling::NONE, chess::PieceType::Knight), true);
+				}
+				else {
+					moves.push_back(Move(sq, capSq), true);
+				}
+			}
+		}
+
+		// --- En Passant ---
+		// Requires checking History for the last move
+		if (!history.empty()) {
+			// En Passant happens on specific ranks (White: logic rank 3 -> idx ~32?, Black: logic rank 4)
+			// We check if an enemy pawn is adjacent to us (sq-1 or sq+1)
+
+			int adjOffsets[] = { -1, 1 };
+			for (int offset : adjOffsets) {
+				int adjSq = sq + offset;
+				if (adjSq < 0 || adjSq >= 64) continue;
+
+				// File wrap check for adjacency
+				if (abs((sq % 8) - (adjSq % 8)) != 1) continue;
+
+				uint64_t adjMask = (1ULL << adjSq);
+
+				// Must have an enemy pawn there
+				uint64_t relevantEnemyPawns = (color == Color::White) ? state.blackPawns : state.whitePawns;
+
+				if (relevantEnemyPawns & adjMask) {
+					// Check if that pawn just moved double
+					auto lastMove = history.back().move;
+					int lastTo = lastMove.getToSq();
+					int lastFrom = lastMove.getFromSq();
+
+					if (lastTo == adjSq && abs(lastFrom - lastTo) == 16) {
+						// Valid En Passant Target
+						int destSq = adjSq + forward; // Move to the square *behind* the pawn
+
+						auto enPassantMove = Move(sq, destSq, true);
+
+						// Original logic used !canEnPassant to validate safety
+						if (!bitboard.canEnPassant(enPassantMove)) {
+							moves.push_back(enPassantMove, true);
+						}
 					}
 				}
 			}
 
-			// --- En Passant ---
-			// Requires checking History for the last move
-			if (!history.empty() ) {
-				// En Passant happens on specific ranks (White: logic rank 3 -> idx ~32?, Black: logic rank 4)
-				// We check if an enemy pawn is adjacent to us (sq-1 or sq+1)
-
-				int adjOffsets[] = { -1, 1 };
-				for (int offset : adjOffsets) {
-					int adjSq = sq + offset;
-					if (adjSq < 0 || adjSq >= 64) continue;
-
-					// File wrap check for adjacency
-					if (abs((sq % 8) - (adjSq % 8)) != 1) continue;
-
-					uint64_t adjMask = (1ULL << adjSq);
-
-					// Must have an enemy pawn there
-					uint64_t relevantEnemyPawns = (color == Color::White) ? state.blackPawns : state.whitePawns;
-
-					if (relevantEnemyPawns & adjMask) {
-						// Check if that pawn just moved double
-						auto lastMove = history.back().move;
-						int lastTo = lastMove.getToSq();
-						int lastFrom = lastMove.getFromSq();
-
-						if (lastTo == adjSq && abs(lastFrom - lastTo) == 16) {
-							// Valid En Passant Target
-							int destSq = adjSq + forward; // Move to the square *behind* the pawn
-
-							auto enPassantMove = Move(sq, destSq, true);
-
-							// Original logic used !canEnPassant to validate safety
-							if (!bitboard.canEnPassant(enPassantMove)) {
-								moves.push_back(enPassantMove);
-							}
-						}
-					}
-				}
-			
 		}
 	}
 	MoveList Board::getAllPseudoLegalMoves() {
@@ -182,14 +181,17 @@ namespace chess {
 			bool queenSide = (sideToMove == Color::White) ? castling.whiteQueen : castling.blackQueen;
 
 			chess::Position fromPos = chess::Position(fromSq);
-			if (queenSide) {
-				if (bitboard.canCastle(false, fromSq)) {
-					allMoves.push_back(Move(fromPos.row, fromPos.column, piecePos, 2, false, Castling::Queen));
+			if (!isCheck()) {
+
+				if (queenSide) {
+					if (bitboard.canCastle(false, fromSq)) {
+						allMoves.push_back(Move(fromPos.row, fromPos.column, piecePos, 2, false, Castling::Queen));
+					}
 				}
-			}
-			if (kingSide) {
-				if (bitboard.canCastle(true, fromSq)) {
-					allMoves.push_back(Move(fromPos.row, fromPos.column, piecePos, 6, false, Castling::King));
+				if (kingSide) {
+					if (bitboard.canCastle(true, fromSq)) {
+						allMoves.push_back(Move(fromPos.row, fromPos.column, piecePos, 6, false, Castling::King));
+					}
 				}
 			}
 			myKings &= myKings - 1;       // remove that bit
@@ -204,14 +206,14 @@ namespace chess {
 		while (myPawns) {
 			// Get the index of the first piece (0-63)
 			int sq = Bitboard::lsb(myPawns);
-			
+
 			generatePawnMoves(sq, allMoves);
 
 			myPawns &= (myPawns - 1);
 
 		}
 
-
+		allMoves.finalize();
 		return allMoves;
 	}
 
@@ -246,7 +248,7 @@ namespace chess {
 				std::pair<uint64_t, uint64_t> mask = bitboard.getCheckMask(kingIndex, sideToMove, attackers);
 				uint64_t checkMask = mask.first;
 				uint64_t controledMask = mask.second;
-				if (bitboard.getPieceType(fromPosNum)==chess::PieceType::King) {
+				if (bitboard.getPieceType(fromPosNum) == chess::PieceType::King) {
 
 					if (!(controled & (1ULL << toPosNum))) {
 						if (!(controledMask & (1ULL << toPosNum))) {
@@ -269,7 +271,7 @@ namespace chess {
 					}
 
 					if (resolvesCheck && satisfiesPin) {
-						legalMoves.push_back(mv);
+						legalMoves.push_back(mv, bitboard.hasPiece(mv.getToSq()));
 					}
 				}
 			}
@@ -288,24 +290,19 @@ namespace chess {
 					}
 				}
 				else {
-					legalMoves.push_back(mv);
+					legalMoves.push_back(mv, bitboard.hasPiece(mv.getToSq()));
 
 				}
 			}
 
 		}
+		legalMoves.finalize();
 		return legalMoves;
 
 	}
 	MoveList Board::getAllLegalCaptures() {
-		MoveList allMoves = getAllLegalMoves();
-		MoveList captureMoves;
-		for (Move mv : allMoves) {
-			auto pos = mv.getToPos();
-			if (board[pos.row][pos.column].hasPiece()) {
-				captureMoves.push_back(mv);
-			}
-		}
+		MoveList captureMoves = getAllLegalMoves();
+		captureMoves.finalizeCapturesOnly();
 		return captureMoves;
 	}
 	void Board::rookCastling(chess::Position pos, Color pieceColor) {

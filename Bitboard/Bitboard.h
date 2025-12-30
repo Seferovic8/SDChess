@@ -111,7 +111,6 @@ namespace chess {
 
 		static const uint64_t FILE_A = 0x0101010101010101ULL;
 		static const uint64_t FILE_H = 0x8080808080808080ULL;
-		chess::Color sideToMove;
 		// Bitboard.cpp
 		void pBitboard(uint64_t allPieces);
 
@@ -136,6 +135,7 @@ namespace chess {
 
 
 	public:
+		chess::Color sideToMove;
 		static inline int lsb(uint64_t bb) {
 #ifdef _MSC_VER
 			unsigned long index;
@@ -179,7 +179,7 @@ namespace chess {
 
 		//Bitboard_MakeMove.cpp
 		StateBitboard getBitboardState();
-		void loadBitboardFromState(StateBitboard state,Color side);
+		uint64_t getAllPieces();
 		void removeEnemyPiece(Color enemy, int pos);
 		void movePieceOnBitboard(int fromSq, int toSq, PieceType pt, Color side);
 		void handlePromotion(Color side, int toSq, PieceType promo);
