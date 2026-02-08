@@ -1,5 +1,2 @@
-/.vs
-/SDchess/x64
-/x64
-x64/
+/guiApp/build
 /terminalApp/x64

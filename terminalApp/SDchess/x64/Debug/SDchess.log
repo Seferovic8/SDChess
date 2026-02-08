@@ -1,0 +1,175 @@
+﻿  Bitboard.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard.cpp')
+  
+  Bitboard_init.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_init.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_init.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_init.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_init.cpp')
+  
+  bitboard_Magic.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/bitboard_Magic.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/bitboard_Magic.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/bitboard_Magic.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/bitboard_Magic.cpp')
+  
+  Bitboard_MakeMove.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_MakeMove.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_MakeMove.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_MakeMove.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_MakeMove.cpp')
+  
+  Bitboard_Moves.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Moves.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Moves.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Moves.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Moves.cpp')
+  
+  Bitboard_Safety.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Safety.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Safety.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Safety.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Bitboard/Bitboard_Safety.cpp')
+  
+  Board.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\Board.cpp(196,13): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\Board.cpp(309,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Board_Evaluation.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_Evaluation.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_Evaluation.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_Evaluation.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_Evaluation.cpp')
+  
+  Board_MoveGen.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_MoveGen.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_MoveGen.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_MoveGen.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Board/Board_MoveGen.cpp')
+  
+  evaluation_parameters.cpp
+  Move.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Move/Move.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Move/Move.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Move/Move.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Move/Move.cpp')
+  
+  Piece.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Piece/Piece.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Piece/Piece.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.cpp(55,11): warning C4305: 'return': truncation from 'int' to 'char'
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.cpp(55,11): warning C4309: 'return': truncation of constant value
+  Position.cpp
+  SDchess.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'SDchess.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'SDchess.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'SDchess.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.h(6,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'SDchess.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\test.h(43,18): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  (compiling source file 'SDchess.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\test.h(42,18): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  (compiling source file 'SDchess.cpp')
+  
+  Square.cpp
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.h(4,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Square/Square.cpp')
+  
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.h(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  (compiling source file 'Square/Square.cpp')
+  
+  test.h
+C:\Users\Korisnik\Work\SDChess\terminalApp\test.h(43,18): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\Korisnik\Work\SDChess\terminalApp\test.h(42,18): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  Generating Code...
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.cpp(60,1): warning C4715: 'chess::getPieceChar': not all control paths return a value
+  SDchess.vcxproj -> C:\Users\Korisnik\Work\SDChess\terminalApp\x64\Debug\SDchess.exe

@@ -1,0 +1,16 @@
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\Bitboard.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Bitboard.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\Bitboard_init.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Bitboard_init.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\bitboard_Magic.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\bitboard_Magic.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\Bitboard_MakeMove.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Bitboard_MakeMove.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\Bitboard_Moves.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Bitboard_Moves.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Bitboard\Bitboard_Safety.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Bitboard_Safety.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\Board.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Board.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\Board_Evaluation.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Board_Evaluation.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\Board_MoveGen.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Board_MoveGen.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Board\evaluation_parameters.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\evaluation_parameters.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Move\Move.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Move.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Piece\Piece.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Piece.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Position\Position.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Position.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\SDchess.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\Square\Square.cpp;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\Square.obj
+C:\Users\Korisnik\Work\SDChess\terminalApp\test.h;C:\Users\Korisnik\Work\SDChess\terminalApp\SDchess\x64\Debug\test.obj
