@@ -14,11 +14,9 @@
 //
 #pragma once
 #include <gui/Window.h>
-#include "MenuBar.h"
 //#include "ViewChessBoard.h"     //This is the main view
 #include <functional>
 //#include "ViewSettings.h"
-#include "ToolBar.h"
 #include <gui/Panel.h>
 #include <gui/VerticalLayout.h>
 #include "SelectionPage.h"
@@ -33,13 +31,11 @@
 //
 #pragma once
 #include <gui/Window.h>
-#include "MenuBar.h"
 #include "ChessWindow.h"
 //#include "ViewChessBoard.h"     //This is the main view
 #include <functional>
 //#include "ViewSettings.h"
 //#include "ViewSettings.h"
-#include "ToolBar.h"
 #include <gui/Panel.h>
 #include "SelectionPage.h"
 
@@ -55,20 +51,7 @@
 #include <gui/LineEdit.h>
 #include <gui/TextEdit.h>
 #include <gui/Button.h>
-enum class ChessType {
-	Regular,
-	Chess960
-};
-enum class ChessColor {
-	White,
-	Random,
-	Black
-};
-enum class ChessDifficulty {
-	Easy,
-	Medium,
-	Hard
-};
+
 struct RectSizes {
 	int x1;
 	int y1;
@@ -344,7 +327,8 @@ protected:
 			(click.y >= playRectSizes.y1 && click.y <= playRectSizes.y2)) {
 		//	auto k = pWnd->getFixSizes();
 			FixSizes f = FixSizes::FixAuto;
-			ChessWindow* window = new ChessWindow();
+
+			ChessWindow* window = new ChessWindow(chessType, chessDifficulty, chessColor);
 			setAsCentralViewInWindow(window,f);
 			window->open();
 			closeInitialWin();

@@ -1,2 +1,6 @@
 /guiApp/build
 /terminalApp/x64
+/.vs
+/guiApp/b
+/terminalApp/.vs
+/terminalApp/.vs

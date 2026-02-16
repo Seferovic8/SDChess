@@ -9,18 +9,23 @@ file(GLOB CHESS_INC_THREAD  ${MY_INC}/thread/*.h)
 file(GLOB CHESS_INC_CNT  ${MY_INC}/cnt/*.h)
 file(GLOB CHESS_INC_FO  ${MY_INC}/fo/*.h)
 file(GLOB CHESS_INC_XML  ${MY_INC}/xml/*.h)
+file(GLOB_RECURSE CHESS_LOGIC_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/src/chessLogic/*.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/chessLogic/*.h
+)
 
 #Application icon
 set(CHESS_PLIST  ${CMAKE_CURRENT_LIST_DIR}/res/appIcon/AppIcon.plist)
 if(WIN32)
-	set(CHESS_WINAPP_ICON ${CMAKE_CURRENT_LIST_DIR}/res/appIcon/winAppIcon.rc)
+set(CHESS_WINAPP_ICON ${CMAKE_CURRENT_LIST_DIR}/res/appIcon/winAppIcon.rc)
 else()
-	set(CHESS_WINAPP_ICON ${CMAKE_CURRENT_LIST_DIR}/res/appIcon/winAppIcon.cpp)
+set(CHESS_WINAPP_ICON ${CMAKE_CURRENT_LIST_DIR}/res/appIcon/winAppIcon.cpp)
 endif()
 
 # add executable
 add_executable(${CHESS_NAME} ${CHESS_INCS} ${CHESS_SOURCES} ${CHESS_INC_TD} ${CHESS_INC_THREAD} 
-				${CHESS_INC_CNT} ${CHESS_INC_FO} ${CHESS_INC_GUI} ${CHESS_INC_XML} ${CHESS_WINAPP_ICON})
+${CHESS_INC_CNT} ${CHESS_INC_FO} ${CHESS_INC_GUI} ${CHESS_INC_XML} ${CHESS_WINAPP_ICON}
+${CHESS_LOGIC_SOURCES})
 
 source_group("inc"            FILES ${CHESS_INCS})
 source_group("inc\\td"        FILES ${CHESS_INC_TD})
@@ -30,7 +35,11 @@ source_group("inc\\gui"        FILES ${CHESS_INC_GUI})
 source_group("inc\\thread"        FILES ${CHESS_INC_THREAD})
 source_group("inc\\xml"        FILES ${CHESS_INC_XML})
 source_group("src"            FILES ${CHESS_SOURCES})
-
+source_group(
+    TREE ${CMAKE_CURRENT_LIST_DIR}/src/chessLogic
+    PREFIX "inc\\chessLogic"
+    FILES ${CHESS_LOGIC_SOURCES}
+)
 target_link_libraries(${CHESS_NAME} debug ${MU_LIB_DEBUG} debug ${NATGUI_LIB_DEBUG} 
 										optimized ${MU_LIB_RELEASE} optimized ${NATGUI_LIB_RELEASE})
 

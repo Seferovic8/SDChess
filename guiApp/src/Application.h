@@ -6,7 +6,6 @@
 #pragma once
 #include <gui/Application.h>
 #include "MainWindow.h"
-#include "Constants.h"
 
 class Application : public gui::Application
 {

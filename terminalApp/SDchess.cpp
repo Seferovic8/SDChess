@@ -74,8 +74,8 @@ int main()
 	using std::chrono::duration_cast;
 	using std::chrono::duration;
 	using std::chrono::milliseconds;
-	//std::string fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1";
-	std::string fen = "6k1/3rP3/1nP1N1P1/7Q/2p1P2p/1b6/4K1Pp/1R6 w - - 0 1";
+	std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
+	//std::string fen = "6k1/3rP3/1nP1N1P1/7Q/2p1P2p/1b6/4K1Pp/1R6 w - - 0 1";
 	//std::string fen = "8/8/3Q4/1k6/8/4B3/3N4/4K2R w K - 6 32";
 	//std::string fen = "3k2rr/8/8/8/8/8/8/4K3 w - - 0 1";
    // std::string fen = "5k1r/8/8/8/8/8/4P3/4K2R w K - 0 1";
@@ -88,7 +88,7 @@ int main()
 	auto moves = board.getAllLegalMoves();
 	board.printBoard();
 	auto t1 = high_resolution_clock::now();
-	    int numPositions = moveGenerationTest(board, 6);
+	    int numPositions = moveGenerationTest(board, 5);
 	std::cout << numPositions << std::endl;
    //int numPositions = moveGenerationTest(board, 5);
    //std::cout<< numPositions << std::endl; //<<" - NumOfMoves: " << board.getAllLegalMoves().size() << std::endl;
