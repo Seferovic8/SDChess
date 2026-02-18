@@ -342,13 +342,28 @@ public:
 	SelectionPage() :gui::Canvas({ gui::InputDevice::Event::PrimaryClicks}) 
 		 {
 		enableResizeEvent(true);
-
+#ifdef _WIN32
 		_fontWelcome.create("Roboto", 28.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
 		_fontSelect.create("Roboto", 14.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
 		_fontRegular.create("Roboto", 14.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
 		_fontExplanation.create("Roboto", 12.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
 		_fontDifficulty.create("Inter", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
-		_fontButton.create("Inter", 16.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontButton.create("Inter", 16.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel); 
+#elif defined(__linux__)
+		_fontWelcome.create("DejaVu Sans", 28.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontSelect.create("DejaVu Sans", 14.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+		_fontRegular.create("DejaVu Sans", 14.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontExplanation.create("DejaVu Sans", 12.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+		_fontDifficulty.create("DejaVu Sans", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontButton.create("DejaVu Sans", 16.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel); 
+#else
+		_fontWelcome.create("Helvetica", 28.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontSelect.create("Helvetica", 14.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+		_fontRegular.create("Helvetica", 14.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontExplanation.create("Helvetica", 12.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+		_fontDifficulty.create("Helvetica", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		_fontButton.create("Helvetica", 16.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+#endif
 		setBackgroundColor(td::ColorID::SysBackAlt2);
 		reDraw();
 		//resetSimulation();

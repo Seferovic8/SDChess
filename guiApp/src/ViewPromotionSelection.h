@@ -34,10 +34,10 @@ protected:
 	CloseDialogCallback _closeDialogCallback;
 public:
 	ViewPromotinSelection(chess::Color playerColor, CloseDialogCallback closeDialogCallback)
-		: _queen(playerColor==chess::Color::White ? "../assets/wq.png": "../assets/bq.png")
-		, _rook(playerColor==chess::Color::White ? "../assets/wr.png": "../assets/br.png")
-		, _bishop(playerColor==chess::Color::White ? "../assets/wb.png": "../assets/bb.png")
-		, _knight(playerColor==chess::Color::White ? "../assets/wn.png": "../assets/bn.png")
+		: _queen(playerColor==chess::Color::White ? ":whiteQueen": ":blackQueen")
+		, _rook(playerColor==chess::Color::White ? ":whiteRook": ":blackRook")
+		, _bishop(playerColor==chess::Color::White ? ":whiteBishop": ":blackBishop")
+		, _knight(playerColor==chess::Color::White ? ":whiteKnight": ":blackKnight")
 		, _btnQueen(&_queen,"")
 		, _btnRook(&_rook,"")
 		, _btnBishop(&_bishop,"")

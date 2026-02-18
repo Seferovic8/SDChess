@@ -23,7 +23,6 @@
 #include <pwd.h>
 #endif
 #include "ChessTimer.h"
-
 constexpr size_t N = 8;
 
 inline int snapAwayFromZero(float x) {
@@ -183,19 +182,19 @@ private:
 
 public:
 	ChessBackend(ChessDifficulty chessDifficulty,bool isChess960, chess::Color playerColor, PromotionCallback promotionCallback, std::function<void()> resetCallback)
-		: white(15), black(15), _chessDifficulty(chessDifficulty), _imgBoard(playerColor == chess::Color::White ? "../assets/board.jpg" : "../assets/board-flipped.png")
-		, _wk(_assets + "wk.png")
-		, _bk(_assets + "bk.png")
-		, _wp(_assets + "wp.png")
-		, _bp(_assets + "bp.png")
-		, _wq(_assets + "wq.png")
-		, _bq(_assets + "bq.png")
-		, _wr(_assets + "wr.png")
-		, _br(_assets + "br.png")
-		, _wn(_assets + "wn.png")
-		, _bn(_assets + "bn.png")
-		, _wb(_assets + "wb.png")
-		, _bb(_assets + "bb.png")
+		: white(15), black(15), _chessDifficulty(chessDifficulty), _imgBoard(playerColor == chess::Color::White ? ":board" : ":board-flipped")
+		, _wk(":whiteKing")
+		, _bk(":blackKing")
+		, _wp(":whitePawn")
+		, _bp(":blackPawn")
+		, _wq(":whiteQueen")
+		, _bq(":blackQueen")
+		, _wr(":whiteRook")
+		, _br(":blackRook")
+		, _wn(":whiteKnight")
+		, _bn(":blackKnight")
+		, _wb(":whiteBishop")
+		, _bb(":blackBishop")
 		, _playerColor(playerColor)
 		, _promotionCallback(std::move(promotionCallback))
 		, _resetCallback(std::move(resetCallback))
@@ -280,7 +279,7 @@ public:
 	void drawPlayerTime(chess::Color cl) {
 
 		gui::DrawableString playerStr((cl == _playerColor) ? _userName : "Engine");
-		gui::Image playerIcon((cl == _playerColor) ? "../assets/playerImage.png" : "../assets/engine.png");
+		gui::Image playerIcon((cl == _playerColor) ? ":player" : ":engine");
 		gui::Point upperPt(imgPt.x, imgPt.y - 50);
 		gui::Size timeSz(130, 40);
 		gui::Point timePt(imgPt.x + imgSize.width - timeSz.width, imgPt.y - 50);
@@ -294,12 +293,19 @@ public:
 			timePt.y = imgPt.y + imgSize.height + 10;
 		}
 		gui::Font _fontExplanation;
-		_fontExplanation.create("Roboto", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		#ifdef _WIN32
+			_fontExplanation.create("Roboto", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		#elif defined(__linux__)
+			_fontExplanation.create(""DejaVu Sans"", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
 
+		#else
+			_fontExplanation.create("Helvetica", 12.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+		#endif	
 		gui::Shape _playerBar;
-		gui::Rect r(upperPt, gui::Size(100, 40));
+		gui::Rect r(upperPt, gui::Size(40, 40));
 		playerIcon.draw(r, gui::Image::AspectRatio::Keep, td::HAlignment::Left, td::VAlignment::Center);
-		playerStr.draw(r, &_fontExplanation, td::ColorID::White, td::TextAlignment::Right, td::VAlignment::Center);
+		gui::Rect strRect(gui::Point(upperPt.x+50,upperPt.y), gui::Size(250, 40));
+		playerStr.draw(strRect, &_fontExplanation, td::ColorID::White, td::TextAlignment::Left, td::VAlignment::Center);
 
 		gui::Rect timeRect(timePt, timeSz);
 		gui::DrawableString timeStr((cl == chess::Color::Black) ? black.getFormattedTime() : white.getFormattedTime());
@@ -344,10 +350,15 @@ public:
 	void drawButton(const gui::Rect& rect)
 	{
 		gui::Font font;
-		font.create("Roboto", 12.0f,
-			gui::Font::Style::Normal,
-			gui::Font::Unit::LogicalPixel);
+#ifdef _WIN32
+		font.create("Roboto", 12.0f,gui::Font::Style::Normal,gui::Font::Unit::LogicalPixel);
+#elif defined(__linux__)
+		font.create("DejaVu Sans", 12.0f,gui::Font::Style::Normal,gui::Font::Unit::LogicalPixel);
 
+
+#else
+		font.create("Helvetica", 12.0f,gui::Font::Style::Normal,gui::Font::Unit::LogicalPixel);
+#endif	
 		td::ColorID topStripColor = _showEvaluationBar ? td::ColorID::Green : td::ColorID::Red;
 
 		gui::Size btnSz(50, 25);
@@ -386,14 +397,34 @@ public:
 		const int rowHeight = 28;
 		const int leftPadding = 16;
 		const int columnSpacing = 80;
-
+		#ifdef _WIN32
 		moveFont.create("Segoe UI", 15.0f,
 			gui::Font::Style::Normal,
 			gui::Font::Unit::LogicalPixel);
 
 		moveNumberFont.create("Segoe UI", 15.0f,
 			gui::Font::Style::Bold,
+			gui::Font::Unit::LogicalPixel); 
+#elif defined(__linux__)
+		moveFont.create("DejaVu Sans", 15.0f,
+			gui::Font::Style::Normal,
 			gui::Font::Unit::LogicalPixel);
+
+		moveNumberFont.create("DejaVu Sans", 15.0f,
+			gui::Font::Style::Bold,
+			gui::Font::Unit::LogicalPixel);
+
+
+		#else
+		moveFont.create("Helvetica", 15.0f,
+			gui::Font::Style::Normal,
+			gui::Font::Unit::LogicalPixel);
+
+		moveNumberFont.create("Helvetica", 15.0f,
+			gui::Font::Style::Bold,
+			gui::Font::Unit::LogicalPixel); 
+	#endif
+
 
 		gui::Rect panelRect(
 			imgPt.x + imgSize.width + 40,
@@ -543,8 +574,13 @@ public:
 		gui::Shape shape;
 		gui::Font _font;
 
+#ifdef _WIN32
 		_font.create("Roboto", 36.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
-
+#elif defined(__linux__)
+		_font.create("DejaVu Sans", 36.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+#else
+		_font.create("Helvetica", 36.0f, gui::Font::Style::Bold, gui::Font::Unit::LogicalPixel);
+#endif	
 		gui::Size boxSize(500, 350);
 		gui::Point boxPt(
 			rect.width() / 2 - boxSize.width / 2,
@@ -595,7 +631,13 @@ public:
 		shape.drawFillAndWire(td::ColorID::Green, td::ColorID::Gold, 2);
 		gui::Font _newGamefont;
 
+#ifdef _WIN32
 		_newGamefont.create("Roboto", 20.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+#elif defined(__linux__)
+		_newGamefont.create("DejaVu Sans", 20.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+#else
+		_newGamefont.create("Helvetica", 20.0f, gui::Font::Style::Normal, gui::Font::Unit::LogicalPixel);
+#endif	
 		gui::DrawableString newGameStr("New game");
 		newGameStr.draw(newGameRect,
 			&_newGamefont,

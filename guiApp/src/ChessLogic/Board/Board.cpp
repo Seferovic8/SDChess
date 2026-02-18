@@ -559,7 +559,7 @@ namespace chess {
 		// Construct full FEN
 		std::string fen =
 			blackBackRank + "/pppppppp/8/8/8/8/PPPPPPPP/" +
-			whiteBackRank + " w KQkq - 0 1";
+			whiteBackRank + " w - 0 1";
 
 		return fen;
 	}
